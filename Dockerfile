@@ -5,8 +5,7 @@ MAINTAINER hcshi
 WORKDIR /app
 
 COPY server/target/download-server-0.0.1-SNAPSHOT.jar /home/app.jar
-RUN ls -al /app
-RUN ls -al /home
+
 # 暴露后端应用的端口
 EXPOSE 8110
 
