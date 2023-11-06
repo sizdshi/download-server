@@ -65,3 +65,5 @@ build/
 /**/**/application-dev.yml
 
 /**/application.yml
+
+application.yml
