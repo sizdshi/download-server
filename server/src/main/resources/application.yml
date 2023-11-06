@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-cn-5yd3gvqp50014o.rwlb.rds.aliyuncs.com:3306/download_db?useUnicode=true&characterEncoding=UTF8&serverTimezone=UTC&autoReconnect=true
     username: hc
-    password: Shc@123
+    password: Shc@123a
 
 
 
