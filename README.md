@@ -11,13 +11,13 @@
 ```bash
 cd web
 
-yarn or  npm install
+yarn install or  npm install
 ```
 
 启动：
 
 ```bash
-vite
+vite or npm run dev
 ```
 
 部署：
