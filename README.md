@@ -9,6 +9,8 @@
 安装依赖：
 
 ```bash
+cd web
+
 yarn or  npm install
 ```
 
@@ -21,5 +23,5 @@ vite
 部署：
 
 ```bash
-yarn build or npm run build
+vue-tsc && vite build
 ```
