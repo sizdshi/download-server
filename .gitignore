@@ -59,7 +59,7 @@ build/
 ### VS Code ###
 .vscode/
 
-/**/application.yml
-/**/application.properties
-/**/application-prod.yml
-/**/application-dev.yml
+#/**/application.yml
+#/**/application.properties
+#/**/application-prod.yml
+#/**/application-dev.yml

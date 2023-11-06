@@ -1,0 +1,8 @@
+server:
+  port: 8011
+
+# ant样式匹配，适配路由请求
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

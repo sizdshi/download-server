@@ -4,10 +4,10 @@ MAINTAINER hcshi
 
 WORKDIR /app
 
-COPY server/target/download-server-0.0.1-SNAPSHOT.jar /home/app.jar
+COPY server/target/download-server-0.0.1-SNAPSHOT.jar app.jar
 
 # 暴露后端应用的端口
-EXPOSE 8110
+EXPOSE 8111
 
 # 启动后端应用
 CMD ["java", "-jar", "app.jar"]
