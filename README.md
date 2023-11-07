@@ -1,27 +1,34 @@
 # download-server
 
-## 快速启动 🚀
-
-### 前端
-
-环境要求：Node.js >= 16
-
-安装依赖：
+### Web
+> Node.js >= 16
 
 ```bash
 cd web
-
-yarn install or  npm install
+yarn
+npm run dev
 ```
+### Server
+1. Install maven, add mvn to PATH (Linux/Windows)
+2. Setup aliyun mirrors with `~/.m2/settings.xml`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-启动：
-
-```bash
-vite or npm run dev
+        <mirrors>
+                <mirror>
+                    <id>aliyunmaven</id>
+                    <mirrorOf>*</mirrorOf>
+                    <name>aliyun public maven</name>
+                    <url>https://maven.aliyun.com/repository/public</url>
+                </mirror>
+        </mirrors>
+</settings>
 ```
-
-部署：
-
+3. run server
 ```bash
-vue-tsc && vite build
+cd server
+mvn spring-boot:run
 ```
