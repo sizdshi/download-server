@@ -1,6 +1,6 @@
 package com.example.downloadserver.service.impl;
 
-import com.example.downloadserver.service.TransferInterface;
+import com.example.downloadserver.service.TransferService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
  * @Description:
  **/
 @Service
-public class TransferInterfaceImpl implements TransferInterface {
+public class TransferServiceImpl implements TransferService {
 
 }
