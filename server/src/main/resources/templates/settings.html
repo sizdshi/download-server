@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="/server/src/main/resources/static/css/settings.css" />
+    <link rel="stylesheet" href="/css/settings.css" />
     <title>Settings</title>
 </head>
 
@@ -13,22 +13,23 @@
 
 <div class="setting-container">
     <h1>Settings</h1>
-    <form th:action="@{/settings}" th:object="${setting}" method="post">
+    <form th:action="@{/settings}" th:object="${setting}" method="patch">
         <label for="storePath">Download Path</label><br>
         <input type="text" id="storePath" th:field="*{storePath}" value="/data/downloads"><br>
 
         <label for="maxTasks">Max Tasks</label><br>
-        <input type="number" id="maxTasks" th:field="*{maxTasks}" min="0" value="4"><br>
+        <input type="number" id="maxTasks" th:field="*{maxTasks}" min="0"><br>
 
         <label for="maxDownloadSpeed">Max Download Speed</label><br>
-        <input type="number" id="maxDownloadSpeed" th:field="*{maxDownloadSpeed}" min="0" value="1"><a>MB/S</a><br>
+        <input type="number" id="maxDownloadSpeed" th:field="*{maxDownloadSpeed}" min="0"><a>MB/S</a><br>
 
         <label for="maxUploadSpeed">Max Upload Speed</label><br>
-        <input type="number" id="maxUploadSpeed" th:field="*{maxUploadSpeed}" min="0" value="1"><a>MB/S</a><br>
+        <input type="number" id="maxUploadSpeed" th:field="*{maxUploadSpeed}" min="0"><a>MB/S</a><br>
 
-        <button>Save settings</button>
+        <button type="submit">Save settings</button>
     </form>
 </div>
+
 </body>
 
 </html>

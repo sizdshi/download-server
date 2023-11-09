@@ -1,11 +1,11 @@
 package com.example.downloadserver.controller;
 
 import com.example.downloadserver.model.Setting;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class SettingController {
@@ -19,7 +19,7 @@ public class SettingController {
     }
     @PatchMapping("/settings")
     public String patchSetting(Model model, @RequestParam("storePath") String storePath, @RequestParam("maxTasks") int maxTasks
-                                    , @RequestParam("maxDownloadSpeed") int maxDownloadSpeed, @RequestParam("maxUploadSpeed") int maxUploadSpeed) {
+            , @RequestParam("maxDownloadSpeed") int maxDownloadSpeed, @RequestParam("maxUploadSpeed") int maxUploadSpeed) {
         setting.setStorePath(storePath);
         setting.setMaxTasks(maxTasks);
         setting.setMaxDownloadSpeed(maxDownloadSpeed);
@@ -27,4 +27,5 @@ public class SettingController {
         model.addAttribute("setting", setting);
         return "/settings";
     }
+
 }
