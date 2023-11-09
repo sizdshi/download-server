@@ -3,7 +3,7 @@ package com.example.downloadserver.controller;
 import com.example.downloadserver.common.ErrorCode;
 import com.example.downloadserver.exception.BusinessException;
 import com.example.downloadserver.model.BaseResponse;
-import com.example.downloadserver.service.TransferService;
+import com.example.downloadserver.service.DownloadService;
 import com.example.downloadserver.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.concurrent.*;
 
 /**
@@ -27,13 +26,13 @@ import java.util.concurrent.*;
 @RequestMapping("/task")
 public class TransferController {
 
-    int corePoolSize = 5;
-    int maximumPoolSize = 10;
-    long keepAliveTime = 60L;
-
-    TimeUnit unit = TimeUnit.SECONDS;
+//    int corePoolSize = 5;
+//    int maximumPoolSize = 10;
+//    long keepAliveTime = 60L;
+//
+//    TimeUnit unit = TimeUnit.SECONDS;
     @Resource
-    private TransferService transferService;
+    private DownloadService downloadService;
 
     public  static boolean isPaused = false;
 
