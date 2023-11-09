@@ -5,7 +5,7 @@ create database if not exists downloader_db;
 use downloader_db;
 
 drop table download;
-create table if not exists downloader_db.download
+create table if not exists download
 (
     id               bigint auto_increment comment 'id' primary key,
     file_name        varchar(256)                           not null comment '文件名',
