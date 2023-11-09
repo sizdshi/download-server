@@ -64,6 +64,7 @@ const stop = () => {
 <style scoped>
 .container {
     display: flex;
+
 }
 
 .left-box {
