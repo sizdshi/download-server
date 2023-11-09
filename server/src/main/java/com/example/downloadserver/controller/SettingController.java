@@ -1,31 +1,44 @@
 package com.example.downloadserver.controller;
 
-import com.example.downloadserver.model.Setting;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.example.downloadserver.dataobject.SettingDO;
+import com.example.downloadserver.mapper.SettingMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+
 @Controller
+@RequestMapping("/settings")
 public class SettingController {
-    Setting setting = new Setting();
-    @GetMapping("/settings")
+
+
+    @Resource
+    private SettingMapper settingMapper;
+
+    SettingDO setting = new SettingDO();
+
+
+    @GetMapping()
     public String getSetting(Model model) {
 
-        model.addAttribute(setting);
+        setting = settingMapper.get();
+        model.addAttribute("setting", setting);
 
         return "settings";
     }
-    @PatchMapping("/settings")
-    public String patchSetting(Model model, @RequestParam("storePath") String storePath, @RequestParam("maxTasks") int maxTasks
-            , @RequestParam("maxDownloadSpeed") int maxDownloadSpeed, @RequestParam("maxUploadSpeed") int maxUploadSpeed) {
+    @PostMapping()
+    public String patchSetting(Model model, @RequestParam("storePath") String storePath,
+                               @RequestParam("maxTasks") int maxTasks,
+                               @RequestParam("maxDownloadSpeed") int maxDownloadSpeed,
+                               @RequestParam("maxUploadSpeed") int maxUploadSpeed) {
         setting.setStorePath(storePath);
         setting.setMaxTasks(maxTasks);
         setting.setMaxDownloadSpeed(maxDownloadSpeed);
         setting.setMaxUploadSpeed(maxUploadSpeed);
+        settingMapper.update(setting);
         model.addAttribute("setting", setting);
-        return "/settings";
+        return "settings";
     }
 
 }

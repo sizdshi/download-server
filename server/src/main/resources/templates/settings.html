@@ -13,7 +13,7 @@
 
 <div class="setting-container">
     <h1>Settings</h1>
-    <form th:action="@{/settings}" th:object="${setting}" method="patch">
+    <form  th:object="${setting}" method="post">
         <label for="storePath">Download Path</label><br>
         <input type="text" id="storePath" th:field="*{storePath}" value="/data/downloads"><br>
 
