@@ -3,7 +3,9 @@
   <!--  <p>{{state.msg}}</p>-->
   <div class="common-layout">
     <el-container class="layout-container-demo" style="height: 500px">
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">Aside
+      {{ state.msg }}
+      </el-aside>
       <el-container>
         <el-header>Header
           <el-input  class="input" v-model="input" placeholder="Please input">
@@ -12,7 +14,7 @@
           <el-button color="#626aef"  type="success" round>Success</el-button>
           <el-icon :size="20" style="margin-right: 5px"><Close /></el-icon>
           <el-icon :size="20" style="margin-right: 5px"><RefreshRight /></el-icon>
-          <el-icon v-show="isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>
+          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>
           <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="start"><VideoPlay /></el-icon>
         </el-header>
         <el-main>Main
@@ -39,20 +41,6 @@
 </template>
 
 <script setup lang="ts">
-// import Download from "../components/Download.vue"; // 导入 Download 组件
-
-// export default {
-//   components: {
-//     Download, // 在这里注册 Download 组件
-//   },
-//   // 其他组件配置
-// }
-// import {reactive} from "vue";
-// import myAxios from "../plugins/myAxios.ts";
-
-// const state = reactive({
-//   msg: {},
-// });
 //
 // myAxios.get("/info?text="+"Hello").then((res)=>{
 //   state.msg = res.data;
@@ -61,6 +49,9 @@
 // import Download from "./Download.vue";
 import Download from "../components/Download.vue";
 import {ref} from "vue";
+import myAxios from "../plugins/myAxios.ts";
+import {reactive} from "vue";
+
 
 const fileName = ref("window-test-iso.rar");
 const filesizeTotal = ref("1.93 GB");
@@ -69,7 +60,25 @@ const speed = ref("13.6 MB/s");
 const remaining = ref("2m 11s");
 const createTime = ref("1 minuts ago");
 const input = ref('')
+const state = reactive({
+  msg: {},
+});
+const startData = {
+  id: "1705234447153963010"
+};
+const requestData = new URLSearchParams();
+requestData.append('id', '1705234447153963010');
+
 const startHandle = () => {
+  myAxios.post("/task/start",requestData).then(response => {
+    // 请求成功时的处理
+    state.msg = response.data;
+    console.log('POST请求成功', response.data);
+  })
+      .catch(error => {
+        // 请求失败时的处理
+        console.error('POST请求失败', error);
+      });
   console.log("startHandle")
 };
 
