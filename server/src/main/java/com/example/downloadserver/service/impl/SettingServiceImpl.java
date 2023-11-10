@@ -12,24 +12,29 @@ public class SettingServiceImpl implements SettingService {
     @Autowired
     private SettingMapper settingMapper;
 
-    SettingDO settingDO = settingMapper.get();
+
+
     @Override
     public String getStorePath() {
+        SettingDO settingDO = settingMapper.get();
         return settingDO.getStorePath();
     }
 
     @Override
     public int getMaxTasks() {
+        SettingDO settingDO = settingMapper.get();
         return settingDO.getMaxTasks();
     }
 
     @Override
     public int getMaxDownloadSpeed() {
+        SettingDO settingDO = settingMapper.get();
         return settingDO.getMaxDownloadSpeed();
     }
 
     @Override
     public int getMaxUploadSpeed() {
+        SettingDO settingDO = settingMapper.get();
         return settingDO.getMaxUploadSpeed();
     }
 }
