@@ -4,19 +4,20 @@
   <div class="common-layout">
     <el-container class="layout-container-demo" style="height: 500px">
       <el-aside width="200px">Aside
-      {{ state.msg }}
+        <Side>{{ state.msg }}</Side>
       </el-aside>
       <el-container>
-        <el-header>Header
-          <el-input  class="input" v-model="input" placeholder="Please input">
-            <template #prepend>Http://</template>
-          </el-input>
-          <el-button color="#626aef"  type="success" round>Success</el-button>
-          <el-icon :size="20" style="margin-right: 5px"><Close /></el-icon>
-          <el-icon :size="20" style="margin-right: 5px"><RefreshRight /></el-icon>
-          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>
-          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="start"><VideoPlay /></el-icon>
-        </el-header>
+
+<!--          <el-input  class="input" v-model="input" placeholder="Please input">-->
+<!--            <template #prepend>Http://</template>-->
+<!--          </el-input>-->
+<!--          <el-button color="#626aef"  type="success" round>Success</el-button>-->
+<!--          <el-icon :size="20" style="margin-right: 5px"><Close /></el-icon>-->
+<!--          <el-icon :size="20" style="margin-right: 5px"><RefreshRight /></el-icon>-->
+<!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>-->
+<!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="start"><VideoPlay /></el-icon>-->
+
+        <el-header style="height: 70px"><Header></Header> </el-header>
         <el-main>Main
           <Download
               style="width: 930px;margin-left: 60px;margin-top: 16px"
@@ -48,6 +49,8 @@
 // import {ref} from "vue";
 // import Download from "./Download.vue";
 import Download from "../components/Download.vue";
+import Header from "../components/Header.vue";
+import Side from "../components/Side.vue";
 import {ref} from "vue";
 import myAxios from "../plugins/myAxios.ts";
 import {reactive} from "vue";
