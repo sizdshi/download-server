@@ -14,7 +14,7 @@ public class SettingController {
 
 
     @Resource
-    private SettingMapper settingMapper;
+    SettingMapper settingMapper;
 
     SettingDO setting = new SettingDO();
 
