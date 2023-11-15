@@ -12,14 +12,23 @@
 	<groupId>com.example</groupId>
 	<artifactId>download-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>download-server</name>
 	<description>A project that supports both BT and HTTP downloads.</description>
+
+	<modules>
+		<module>download</module>
+		<module>main</module>
+		<module>common</module>
+	</modules>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
+
+
 
 		<dependency>
 			<groupId>cn.hutool</groupId>
