@@ -8,16 +8,18 @@
       </el-aside>
       <el-container>
 
-<!--          <el-input  class="input" v-model="input" placeholder="Please input">-->
-<!--            <template #prepend>Http://</template>-->
-<!--          </el-input>-->
-<!--          <el-button color="#626aef"  type="success" round>Success</el-button>-->
-<!--          <el-icon :size="20" style="margin-right: 5px"><Close /></el-icon>-->
-<!--          <el-icon :size="20" style="margin-right: 5px"><RefreshRight /></el-icon>-->
-<!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>-->
-<!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="start"><VideoPlay /></el-icon>-->
+        <!--          <el-input  class="input" v-model="input" placeholder="Please input">-->
+        <!--            <template #prepend>Http://</template>-->
+        <!--          </el-input>-->
+        <!--          <el-button color="#626aef"  type="success" round>Success</el-button>-->
+        <!--          <el-icon :size="20" style="margin-right: 5px"><Close /></el-icon>-->
+        <!--          <el-icon :size="20" style="margin-right: 5px"><RefreshRight /></el-icon>-->
+        <!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="pause"><VideoPause /></el-icon>-->
+        <!--          <el-icon v-show="!isShowControl" :size="20" style="margin-right: 5px" @click="start"><VideoPlay /></el-icon>-->
 
-        <el-header style="height: 70px"><Header></Header> </el-header>
+        <el-header style="height: 70px">
+          <Header></Header>
+        </el-header>
         <el-main>Main
           <Download
               style="width: 930px;margin-left: 60px;margin-top: 16px"
@@ -37,8 +39,6 @@
   </div>
 
 
-
-
 </template>
 
 <script setup lang="ts">
@@ -49,8 +49,10 @@
 // import {ref} from "vue";
 // import Download from "./Download.vue";
 import Download from "../components/Download.vue";
-import Header from "../components/Header.vue";
 import Side from "../components/Side.vue";
+import Header from "../components/Header.vue";
+
+
 import {ref} from "vue";
 import myAxios from "../plugins/myAxios.ts";
 import {reactive} from "vue";
@@ -73,7 +75,7 @@ const requestData = new URLSearchParams();
 requestData.append('id', '1705234447153963010');
 
 const startHandle = () => {
-  myAxios.post("/task/start",requestData).then(response => {
+  myAxios.post("/task/start", requestData).then(response => {
     // 请求成功时的处理
     state.msg = response.data;
     console.log('POST请求成功', response.data);
@@ -96,27 +98,31 @@ const stopHandle = () => {
 </script>
 
 <style scoped>
-.common-layout{
+.common-layout {
   width: 1200px;
   height: 980px;
 }
+
 .layout-container-demo .el-header {
   position: relative;
   background-color: var(--el-color-primary-light-7);
-  height:230px;
+  height: 230px;
   width: 1000px;
   color: var(--el-text-color-primary);
 }
+
 .layout-container-demo .el-aside {
   width: 200px;
   height: 560px;
   color: var(--el-text-color-primary);
   background: var(--el-color-primary-light-8);
 }
+
 .layout-container-demo .el-menu {
   border-right: none;
 
 }
+
 .layout-container-demo .el-main {
   padding: 0;
   height: 750px;
@@ -124,6 +130,7 @@ const stopHandle = () => {
   color: var(--el-text-color-primary);
   background: var(--el-color-primary-light-9);
 }
+
 .layout-container-demo .toolbar {
   display: inline-flex;
   align-items: center;
@@ -131,7 +138,8 @@ const stopHandle = () => {
   height: 100%;
   right: 20px;
 }
-.input{
+
+.input {
   width: 437px;
   height: 30px;
 }
