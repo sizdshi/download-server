@@ -14,7 +14,7 @@ public interface DownloadService extends IService<Download> {
 
     long changeThread(String id, long num, HttpServletRequest request);
 
-    long start(String id, HttpServletRequest request);
+    long start(String id,HttpServletRequest request);
 
     long suspend(String id, HttpServletRequest request);
 

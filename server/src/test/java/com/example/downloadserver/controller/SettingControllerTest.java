@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class SettingControllerTest {
 
     @Test
-    public void testGetSetting() {
+    public void  testGetSetting() {
         // Arrange
         SettingMapper settingMapper = mock(SettingMapper.class);
         SettingDO settingDO = new SettingDO();
