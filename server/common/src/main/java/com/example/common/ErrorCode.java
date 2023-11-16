@@ -1,4 +1,4 @@
-package com.example.downloadercommon.common;
+package com.example.common;
 
 /**
  * @Author: Kenneth shi

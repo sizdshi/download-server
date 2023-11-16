@@ -1,7 +1,7 @@
-package com.example.downloadercommon.exception;
+package com.example.exception;
 
 
-import com.example.downloadercommon.common.ErrorCode;
+import com.example.common.ErrorCode;
 
 /**
  * @Author: Kenneth shi

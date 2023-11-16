@@ -1,7 +1,7 @@
-package com.example.downloadercommon.model;
+package com.example.model;
 
 
-import com.example.downloadercommon.common.ErrorCode;
+import com.example.common.ErrorCode;
 import lombok.Data;
 
 import java.io.Serializable;

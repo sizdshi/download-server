@@ -9,7 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Description:
  **/
 @SpringBootApplication
+
 public class DownloaderCommonApplication {
+
+
+
     public static void main(String[] args) {
         SpringApplication.run(DownloaderCommonApplication.class);
     }

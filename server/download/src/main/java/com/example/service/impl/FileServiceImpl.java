@@ -1,16 +1,11 @@
 package com.example.service.impl;
 
-import cn.hutool.http.HttpUtil;
-import com.example.downloadercommon.common.ErrorCode;
-import com.example.downloadercommon.exception.BusinessException;
 import com.example.service.FileService;
-import org.aspectj.util.FileUtil;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;

@@ -1,9 +1,9 @@
-package com.example.downloadercommon.exception;
+package com.example.exception;
 
 
-import com.example.downloadercommon.common.ErrorCode;
-import com.example.downloadercommon.model.BaseResponse;
-import com.example.downloadercommon.utils.ResultUtils;
+import com.example.common.ErrorCode;
+import com.example.model.BaseResponse;
+import com.example.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
