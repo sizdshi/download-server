@@ -40,7 +40,13 @@ public enum ErrorCode {
     /**
      * 操作错误
      */
+    FILE_ERROR(40500, "下载失败，文件过大，请下载2GB以下文件"),
+    /**
+     * 操作错误
+     */
     OPERATION_ERROR(50001, "操作失败");
+
+
 
     /**
      * 状态码
