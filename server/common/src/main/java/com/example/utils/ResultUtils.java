@@ -1,8 +1,8 @@
-package com.example.downloadercommon.utils;
+package com.example.utils;
 
 
-import com.example.downloadercommon.common.ErrorCode;
-import com.example.downloadercommon.model.BaseResponse;
+import com.example.common.ErrorCode;
+import com.example.model.BaseResponse;
 
 
 /**

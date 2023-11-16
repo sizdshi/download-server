@@ -1,9 +1,9 @@
 package com.example.job;
 
-import org.springframework.scheduling.annotation.Scheduled;
+
+
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * @Author: Kenneth shi
@@ -13,11 +13,15 @@ import javax.annotation.Resource;
 public class DownloadJob {
 
 //    @Resource
+//   @DubboReference
+//   private InnerDownloadService innerDownloadService;
 
 
-
-    @Scheduled(fixedRate = 100)
+//    @Scheduled(fixedRate = 100)
     public void searchStatus(){
-        return;
+
+//        innerDownloadService.say();
     }
+
+
 }

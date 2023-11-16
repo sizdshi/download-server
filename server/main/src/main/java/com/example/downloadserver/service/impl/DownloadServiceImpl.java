@@ -3,8 +3,8 @@ package com.example.downloadserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
-import com.example.downloadercommon.common.ErrorCode;
-import com.example.downloadercommon.exception.BusinessException;
+import com.example.common.ErrorCode;
+import com.example.exception.BusinessException;
 import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.enums.DownloadStatus;
 import com.example.downloadserver.service.DownloadService;

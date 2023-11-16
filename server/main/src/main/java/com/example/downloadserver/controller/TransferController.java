@@ -1,11 +1,11 @@
 package com.example.downloadserver.controller;
 
 
-import com.example.downloadercommon.common.ErrorCode;
-import com.example.downloadercommon.exception.BusinessException;
-import com.example.downloadercommon.model.BaseResponse;
+import com.example.common.ErrorCode;
+import com.example.exception.BusinessException;
+import com.example.model.BaseResponse;
 import com.example.downloadserver.service.DownloadService;
-import com.example.downloadercommon.utils.ResultUtils;
+import com.example.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +33,7 @@ public class TransferController {
 //    TimeUnit unit = TimeUnit.SECONDS;
     @Resource
     private DownloadService downloadService;
+
 
     public  static boolean isPaused = false;
 
