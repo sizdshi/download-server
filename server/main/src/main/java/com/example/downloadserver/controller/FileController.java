@@ -1,5 +1,6 @@
 package com.example.downloadserver.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,23 +8,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+
 @Controller
 @RequestMapping("/file")
 public class FileController {
     @GetMapping("/list")
     @PostMapping("/list")
-    public String fileList(@RequestParam(defaultValue = "/d/downloads") String directory,
-                           @RequestParam(defaultValue = "name") String sortBy,
-                           @RequestParam(defaultValue = "asc") String sortOrder,
-                           Model model) {
+    public List<String> fileList(@RequestParam(defaultValue = "/d/downloads") String directory,
+                                 @RequestParam(defaultValue = "name") String sortBy,
+                                 @RequestParam(defaultValue = "asc") String sortOrder,
+                                 HttpServletResponse response) throws IOException {
 
-        File dir = new File(directory);
-        File[] files = dir.listFiles();
+        //get absolute path
+        directory = new File(directory).getAbsolutePath();
 
-        // 根据排序方式对文件进行排序
+        File[] files = new File(directory).listFiles();
+
+
         boolean ascending = true;
         if (sortOrder.equalsIgnoreCase("desc")) {
             ascending = false;
@@ -44,7 +52,14 @@ public class FileController {
             Arrays.sort(files, comparator);
         }
 
-        model.addAttribute("files", files);
-        return "fileList";
+        List<String> filenames = new ArrayList<>();
+        for (File f : files) {
+            filenames.add(f.getName());
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(), filenames);
+
+        return filenames;
     }
 }
