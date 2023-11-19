@@ -24,15 +24,7 @@ public class HttpDownloadServiceImpl implements HttpDownloadService {
     }
 
     @Override
-    public String download(String url, String savePath) {
-        if (!url.startsWith("http")) {
-            throw new IllegalArgumentException("Url should start with 'http'");
-        }
-
-        if (!savePath.endsWith(File.separator)) {
-            savePath += File.separator;
-        }
-
+    public String download(String url) {
         File file = null;
         try {
             // Create an HTTP GET request for the specified URL
@@ -49,8 +41,8 @@ public class HttpDownloadServiceImpl implements HttpDownloadService {
                 String disposition = response.getFirstHeader("Content-Disposition").getValue();
                 String fileName = disposition.substring(disposition.lastIndexOf("=") + 2, disposition.length());
 
-                // Save the file to the specified location
-                file = new File(savePath + "/" + fileName);
+                // Save the file to the local file system
+                file = new File(fileName);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(EntityUtils.toByteArray(response.getEntity()));
                 fos.close();
@@ -71,14 +63,5 @@ public class HttpDownloadServiceImpl implements HttpDownloadService {
             }
         }
         return null;
-    }
-
-    @Override
-    public void close() {
-        try {
-            httpClient.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.downloadserver.mapper.DownloadMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.downloadserver.model.entity.Download">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="file_name" column="file_name" jdbcType="VARCHAR"/>
+            <result property="url" column="url" jdbcType="VARCHAR"/>
+            <result property="user_id" column="user_id" jdbcType="VARCHAR"/>
+            <result property="count" column="count" jdbcType="BIGINT"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="file_url" column="file_url" jdbcType="VARCHAR"/>
+            <result property="task_type" column="task_type" jdbcType="VARCHAR"/>
+            <result property="torrent" column="torrent" jdbcType="VARCHAR"/>
+            <result property="bytes_download" column="bytes_download" jdbcType="BIGINT"/>
+            <result property="total_chunks" column="total_chunks" jdbcType="BIGINT"/>
+            <result property="upload_file_size" column="upload_file_size" jdbcType="BIGINT"/>
+            <result property="md5" column="md5" jdbcType="VARCHAR"/>
+            <result property="total_time" column="total_time" jdbcType="VARCHAR"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="is_delete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_name,url,
+        user_id,count,status,
+        file_url,task_type,torrent,
+        bytes_download,total_chunks,upload_file_size,
+        md5,total_time,create_time,
+        update_time,is_delete
+    </sql>
+</mapper>

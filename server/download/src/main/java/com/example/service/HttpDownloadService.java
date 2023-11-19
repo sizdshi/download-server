@@ -9,6 +9,6 @@ public interface HttpDownloadService {
      * @param url The URL of the HTTP resource to download.
      * @return The path of the downloaded file.
      */
-    String download(String url,String savePath);
-    void close();
+    String download(String url);
+
 }

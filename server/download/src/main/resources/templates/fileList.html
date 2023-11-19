@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>File List</h1>
+
+<form action="/" method="get">
+  <label for="directory">Directory:</label>
+  <input type="text" id="directory" name="directory" value="/path/to/directory">
+
+  <label for="sortBy">Sort By:</label>
+  <select id="sortBy" name="sortBy">
+    <option value="size">Size</option>
+    <option value="name">Name</option>
+    <option value="ctime">Creation Time</option>
+  </select>
+
+  <button type="submit">Sort</button>
+</form>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Size</th>
+    <th>Creation Time</th>
+  </tr>
+  <tr th:each="file : ${files}">
+    <td th:text="${file.getName()}"></td>
+    <td th:text="${#numbers.formatDecimal(file.length(), 0, 'COMMA', 2, 'POINT')} + ' bytes'"></td>
+    <td th:text="${#dates.format(file.lastModified(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+  </tr>
+</table>
+</body>
+</html>
