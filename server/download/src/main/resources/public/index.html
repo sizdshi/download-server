@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://restcontent.rddoc.cn/static/tailwind-3.3.2.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js" defer></script>
+    <script src="./api.js"></script>
+    <script>
+        function initFile() {
+            return {
+                files: [],
+                optionValue: '',
+                filePath: ['/file'],
+                async fetchData(path) {
+                    await fetchFileList(path).then(res => {
+                        this.files = res
+                        console.log(res)
+                    })
+                },
+                async filterType(paths, type) {
+                    let path = ''
+                    for (let i = 0; i < paths.length; i++) {
+                        path = paths.join('')
+                    }
+                    await fetchFilterFile(path, type).then(res => {
+                        this.files = res
+                        console.log(res)
+                    })
+                },
+                goFile(file) {
+                    if (file) {
+                        if (file.children) {
+                            this.filePath.push(file.path)
+                            this.files = file.children
+                            // TODO: 这里需要把文件的路径传过去,重新调用接口
+                            // let path = ''
+                            // for (let i = 0; i < this.filePath.length; i++) {
+                            //     path = this.filePath.join('')
+                            //     console.log(path)
+                            // }
+                            // this.fetchData(path)
+                        }
+                    } else {
+                        this.filePath.push(file.path)
+                        // TODO: 这里需要把文件的路径传过去,重新调用接口
+                        // this.fetchData()
+                    }
+                },
+                goBack(path) {
+                    console.log(path)
+                    // 通过这个path去找到上一级的文件夹，并且把这个文件夹的children赋值给files
+                    const index = this.filePath.indexOf(path)
+                    this.filePath.splice(index + 1)
+                    console.log(this.filePath)
+                    this.fetchData(path)
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="flex max-w-7xl mx-auto p-20 space-x-40">
+        <div class="border-r fixed w-40 space-y-6">
+            <a href="/index.html" class="flex items-center space-x-2 hover:text-indigo-700 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                </svg>
+                <span> File</span>
+            </a>
+            <a href="/tasks.html" class="flex items-center space-x-2 hover:text-indigo-700 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9.75v6.75m0 0l-3-3m3 3l3-3m-8.25 6a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                </svg>
+                <span> Transfers</span>
+            </a>
+
+            <a href="/setting.html" class="flex items-center space-x-2 hover:text-indigo-700 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span> Settings</span>
+            </a>
+        </div>
+        <div x-data="initFile()" x-init="fetchData" class="space-y-10 w-full flex-grow pl-10">
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center space-x-1">
+                    <template x-if="filePath.length>0">
+                        <template x-for="item in filePath">
+                            <div class="flex items-center space-x-1">
+                                <p class="text-xl -mt-4 cursor-pointer hover:text-indigo-600" x-text="item"
+                                    @click="goBack(item)"></p>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+
+                <select x-model="optionValue" @change="filterType(filePath,optionValue)" class="rounded-md">
+                    <option value="all">All(*.*)</option>
+                    <option value="video">Video(*.mp4;*.mov)</option>
+                    <option value="image">Photo(*.png;*.jpg;*.gif)</option>
+                    <option value="archive">Archive(*.zip;*.rar;*.tar)</option>
+                    <option value="document">Document(*.pptx;*.docx;*.xlsx)</option>
+                </select>
+            </div>
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="mt-8 flow-root">
+                    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                            <table class="min-w-full divide-y divide-gray-300">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"
+                                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                            <div class="flex items-center cursor-pointer">
+                                                <p>File name</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                                </svg>
+                                            </div>
+                                        </th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                            <div class="flex items-center cursor-pointer">
+                                                <p>Size</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                                </svg>
+                                            </div>
+                                        </th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                            <div class="flex items-center cursor-pointer">
+                                                <p>Create time</p>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                                </svg>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <template x-for="file in files" :key="file">
+                                        <tr>
+                                            <td
+                                                class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-800 sm:pl-0">
+                                                <div class="flex items-center space-x-2 cursor-pointer w-auto hover:text-indigo-600"
+                                                    @click="goFile(file)">
+                                                    <template x-if="file.children">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                            class="w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                                                        </svg>
+                                                    </template>
+                                                    <p x-text="file.name"></p>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                                x-text="file.size"> </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                                x-text="(file.createdAt).slice(0,10)"></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
