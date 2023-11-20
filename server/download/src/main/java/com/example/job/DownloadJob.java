@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 public class DownloadJob {
 
 //    @Resource
-   @DubboReference
-   private InnerDownloadService innerDownloadService;
+//   @DubboReference
+//   private InnerDownloadService innerDownloadService;
 
 
 //    @Scheduled(fixedRate = 100)
     public void searchStatus(){
-        innerDownloadService.searchAllTaskStatus();
+//        innerDownloadService.searchAllTaskStatus();
     }
 
 

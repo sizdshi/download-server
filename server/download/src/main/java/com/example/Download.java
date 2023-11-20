@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  **/
 
 @SpringBootApplication
-@EnableDubbo
+
 public class Download {
 
 //    @DubboReference
