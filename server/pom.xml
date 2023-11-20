@@ -92,15 +92,15 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-com.example.DownloadApplicationTests</artifactId>
+			<scope>com.example.DownloadApplicationTests</scope>
 		</dependency>
 
 <!--		<dependency>-->
 <!--			<groupId>org.mybatis.spring.boot</groupId>-->
-<!--			<artifactId>mybatis-spring-boot-starter-test</artifactId>-->
+<!--			<artifactId>mybatis-spring-boot-starter-com.example.DownloadApplicationTests</artifactId>-->
 <!--			<version>2.3.1</version>-->
-<!--			<scope>test</scope>-->
+<!--			<scope>com.example.DownloadApplicationTests</scope>-->
 <!--		</dependency>-->
 
 		<dependency>
