@@ -15,8 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/files")
 public class FileController {
-    @Resource
-    private FileService fileService;
+
 
     @Resource
     private RangeDownload rangeDownload;
@@ -25,18 +24,12 @@ public class FileController {
     String savePath = "QQ9.7.19.29259.exe";;
 
 
-    /**
-     * 文件分片下载
-     * @param range http请求头Range，用于表示请求指定部分的内容。
-     *              格式为：Range: bytes=start-end  [start,end]表示，即是包含请求头的start及end字节的内容
-     * @param request   http请求
-     * @param response  http响应
-     */
-    @RequestMapping(value = "/file/chunk/download", method = RequestMethod.GET)
-    public void fileChunkDownload(@RequestHeader(value = "Range") String range,
-                                  HttpServletRequest request, HttpServletResponse response) {
-        fileService.fileChunkDownload(range,request,response);
-    }
+
+//    @RequestMapping(value = "/file/chunk/download", method = RequestMethod.GET)
+//    public void fileChunkDownload(@RequestHeader(value = "Range") String range,
+//                                  HttpServletRequest request, HttpServletResponse response) {
+//        fileService.fileChunkDownload(range,request,response);
+//    }
 
     @GetMapping("/download")
     public void fileDownload(){
