@@ -1,12 +1,14 @@
 package com.example.common;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: Kenneth shi
  * @Description:
  **/
 @Data
+
 public abstract class DownLoader implements Runnable {
     private String urlPath;
 

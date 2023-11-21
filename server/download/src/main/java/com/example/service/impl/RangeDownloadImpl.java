@@ -2,32 +2,23 @@ package com.example.service.impl;
 
 import com.example.manager.MultipleThreadDownloadManager;
 import com.example.service.RangeDownload;
-import com.example.service.SpeedListener;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @Author: Kenneth shi
  * @Description:
  **/
 @Service
-public class RangeDownloadImpl implements RangeDownload  {
-
-    @Resource
-    private MultipleThreadDownloadManager manager;
+public class RangeDownloadImpl implements RangeDownload {
 
     @Override
     public void download(String filePath, String savePath) {
@@ -42,22 +33,22 @@ public class RangeDownloadImpl implements RangeDownload  {
 //            }
 //        }
 
-            long totalTotalFileSize = getTotalFileSize(filePath);
-            System.out.println("文件大小："+totalTotalFileSize);
-            long chunkSize = calculateChunkSize(totalTotalFileSize);
-            System.out.println("分片大小:"+chunkSize/1024/1024+"MB");
-            //建立线程池
-            downloadInChunks(filePath, savePath, totalTotalFileSize, chunkSize);
+        long totalTotalFileSize = getTotalFileSize(filePath);
+        System.out.println("文件大小：" + totalTotalFileSize);
+        long chunkSize = calculateChunkSize(totalTotalFileSize);
+        System.out.println("分片大小:" + chunkSize / 1024 / 1024 + "MB");
+        //建立线程池
+        downloadInChunks(filePath, savePath, totalTotalFileSize, chunkSize);
 
-            System.out.println("File downloaded successfully!");
-
+        System.out.println("File downloaded successfully!");
 
 
     }
 
     //建立普通get请求，获取文件大小
-    public  long getTotalFileSize(String fileUrl) {
-        URL  url = null;
+    @Override
+    public long getTotalFileSize(String fileUrl) {
+        URL url = null;
         try {
             url = new URL(fileUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -65,8 +56,8 @@ public class RangeDownloadImpl implements RangeDownload  {
             //发送一个普通的GET请求，只获取文件大小而不读取内容
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(100);
-            connection.setRequestProperty("accept","*/*");
-            connection.setRequestProperty("connection","keep-alive");
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "keep-alive");
             connection.setRequestProperty("user-agent",
                     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
 
@@ -81,7 +72,8 @@ public class RangeDownloadImpl implements RangeDownload  {
     }
 
     //根据文件大小计算分片大小
-    public  long calculateChunkSize(long totalFileSize){
+    @Override
+    public long calculateChunkSize(long totalFileSize) {
         if (totalFileSize <= 32 * 1024) {
             return 32 * 1024;  // 最小32KB
         } else if (totalFileSize <= 10 * 1024 * 1024) {
@@ -95,12 +87,13 @@ public class RangeDownloadImpl implements RangeDownload  {
     }
 
     // 根据分片大小构造 Range 请求进行分片下载
-    public  void downloadInChunks(String fileUrl, String savePath, long totalFileSize, long chunkSize) {
+    @Override
+    public void downloadInChunks(String fileUrl, String savePath, long totalFileSize, long chunkSize) {
 
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
         RandomAccessFile file = null;
         try {
-            file = new RandomAccessFile(fileName,"rw");
+            file = new RandomAccessFile(fileName, "rw");
             file.setLength(totalFileSize);
             file.close();
             for (long startByte = 0; startByte < totalFileSize; startByte += chunkSize) {
@@ -120,7 +113,8 @@ public class RangeDownloadImpl implements RangeDownload  {
 
     }
 
-    public  void sendRangeRequest(String fileUrl, String savePath, String rangeHeader) {
+    @Override
+    public void sendRangeRequest(String fileUrl, String savePath, String rangeHeader) {
 
         URL url = null;
         try {
@@ -130,7 +124,7 @@ public class RangeDownloadImpl implements RangeDownload  {
 
             //开始真正发送请求 getInputStream()、getOutputStream() 或 getResponseCode()
             int responseCode = connection.getResponseCode();
-            System.out.println("响应码"+responseCode);
+            System.out.println("响应码" + responseCode);
 
             if (responseCode == HttpURLConnection.HTTP_PARTIAL) {
 
@@ -144,10 +138,10 @@ public class RangeDownloadImpl implements RangeDownload  {
 
                 FileChannel channel = file.getChannel();
                 FileLock lock = channel.lock(startByte, endByte, false);
-                if(lock == null){
+                if (lock == null) {
                     throw new IOException("未能获得锁");
-                }else{
-                    synchronized (file){
+                } else {
+                    synchronized (file) {
                         file.seek(startByte);
 
                         byte[] buffer = new byte[1024];
@@ -165,7 +159,7 @@ public class RangeDownloadImpl implements RangeDownload  {
                 file.close();
                 inputStream.close();
 
-                System.out.println("分片成功： " + rangeHeader+"开始位置: "+startByte/1024/1024+"MB 结束位置："+endByte/1024/1024+"MB");
+                System.out.println("分片成功： " + rangeHeader + "开始位置: " + startByte / 1024 / 1024 + "MB 结束位置：" + endByte / 1024 / 1024 + "MB");
             } else {
                 System.out.println("Server does not support  range: " + rangeHeader + ". Response code: " + responseCode);
             }
@@ -174,7 +168,6 @@ public class RangeDownloadImpl implements RangeDownload  {
         }
 
     }
-
 
 
 }
