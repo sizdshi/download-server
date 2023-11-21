@@ -1,6 +1,6 @@
 package com.example.service;
 
-public interface HttpDownloadService {
+public interface HttpRequestService {
 
 
     /**
@@ -9,6 +9,6 @@ public interface HttpDownloadService {
      * @param url The URL of the HTTP resource to download.
      * @return The path of the downloaded file.
      */
-    String download(String url);
+    String handleHttpRequest(String url, String savePath) throws Exception;
 
 }
