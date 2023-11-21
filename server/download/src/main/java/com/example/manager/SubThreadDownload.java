@@ -56,6 +56,7 @@ public class SubThreadDownload extends DownLoader {
             connection.setRequestProperty("Range", "bytes=" + startIndex + "-" + endIndex);
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_PARTIAL) {
+
                 file = new RandomAccessFile(getSavePath(), "rwd");
                 inputStream = connection.getInputStream();
 
