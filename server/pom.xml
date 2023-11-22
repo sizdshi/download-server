@@ -80,7 +80,6 @@
 			<artifactId>spring-boot-dependencies</artifactId>
 			<version>${spring-boot-dependencies.version}</version>
 			<type>pom</type>
-			<scope>import</scope>
 		</dependency>
 
 		<dependency>
@@ -90,11 +89,7 @@
 			<version>8.0.29</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-com.example.DownloadApplicationTests</artifactId>
-			<scope>com.example.DownloadApplicationTests</scope>
-		</dependency>
+
 
 <!--		<dependency>-->
 <!--			<groupId>org.mybatis.spring.boot</groupId>-->
