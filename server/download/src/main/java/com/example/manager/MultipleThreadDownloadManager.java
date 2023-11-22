@@ -82,9 +82,9 @@ public class MultipleThreadDownloadManager extends DownLoader {
             executorService.shutdown();
 
             //开始监听下载进度
-//            speed();
+            speed();
             // 启动一个单独的监控线程，用于实时更新下载进度
-            new Thread(this::monitorProgress).start();
+//            new Thread(this::monitorProgress).start();
 
 
         } catch (Exception e) {
@@ -95,13 +95,13 @@ public class MultipleThreadDownloadManager extends DownLoader {
 
     private void speed() {
         long totalTasks = (long) Math.ceil((double) len / calculateChunkSize(len));
-        Set<Long> completedChunks = loadCompletedChunks();
-        int downloadedChunks = completedChunks.size();
+
         int temp = 0;
         //循环监控网速，如果下载进度达到100%就结束监控
         while (downloadInProgress) {
             temp = progress;
-
+            Set<Long> completedChunks = loadCompletedChunks();
+            int downloadedChunks = completedChunks.size();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -110,7 +110,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
             double downloadedPercentage =(double) downloadedChunks / (double) totalTasks  * 100;
             System.out.println(String.format("%.2f" , downloadedPercentage));
             //当前下载进度除以文件总长得到下载进度
-            double p = (double) temp / (double) len * 100 +downloadedPercentage;
+            double p = (double) temp / (double) len * (100-downloadedPercentage) +downloadedPercentage;
             //当前下载进度减去前一秒的下载进度就得到一秒内的下载速度
             temp = progress - temp;
 
@@ -207,14 +207,13 @@ public class MultipleThreadDownloadManager extends DownLoader {
 
     // 监控下载进度的方法
     private  void monitorProgress() {
-
         try {
-            Set<Long> completedChunks = loadCompletedChunks();
-            int downloadedChunks = completedChunks.size();
             long totalTasks = (long) Math.ceil((double) len / calculateChunkSize(len));
             while (downloadInProgress) {
+                Set<Long> completedChunks = loadCompletedChunks();
+                int downloadedChunks = completedChunks.size();
                 int temp = progress;
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 // 计算已下载的百分比
                 double downloadedPercentage = (double) downloadedChunks / (double) totalTasks * 100;
                 System.out.println("已下载进度"+downloadedPercentage);
