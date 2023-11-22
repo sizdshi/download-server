@@ -37,7 +37,7 @@ public class FileController {
 //        System.out.println("下载成功");
 
         //1、连接服务器，获取一个文件，获取文件的长度，在本地创建一个大小跟服务器文件一样大的临时文件
-        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "M:\\temp.exe");
+        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "M:\\temp\\");
         //设置线程数
         threadDownload.setThreadCount(4);
         //开启断点下载

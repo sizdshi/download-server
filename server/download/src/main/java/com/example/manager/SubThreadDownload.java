@@ -19,6 +19,8 @@ public class SubThreadDownload extends DownLoader {
     private long startIndex;
     private long endIndex;
 
+    private long chunkIndex;
+
     public SubThreadDownload(String urlPath, String savePath) {
         super(urlPath, savePath);
     }
@@ -29,35 +31,41 @@ public class SubThreadDownload extends DownLoader {
         this.endIndex = endIndex;
     }
 
+    // 添加设置chunkIndex的方法
+    public void setChunkIndex(long chunkIndex) {
+        this.chunkIndex = chunkIndex;
+    }
+
     @Override
     public void run() {
         InputStream inputStream = null;
         RandomAccessFile file = null;
         try {
             //检查是否存在记录下载长度的文件，如果存在就读取这个文件的数据
-            File tempFile = new File(getTempPath() + ".temp");
-            //检查断点继续下载
-            if (tempFile.exists() && tempFile.length() > 0) {
-                FileInputStream fileInputStream = new FileInputStream(tempFile);
-                byte[] temp = new byte[1024];
-                int leng = fileInputStream.read(temp);
-                fileInputStream.close();
-                String s = new String(temp, 0, leng);
-                int dowloadlenInt = Integer.parseInt(s) - 1;
-                //修改下载的开始位置
-                startIndex += dowloadlenInt;
-
-            }
+//            File tempFile = new File(getTempPath() + ".temp");
+//            //检查断点继续下载
+//            if (tempFile.exists() && tempFile.length() > 0) {
+//                FileInputStream fileInputStream = new FileInputStream(tempFile);
+//                byte[] temp = new byte[1024];
+//                int leng = fileInputStream.read(temp);
+//                fileInputStream.close();
+//                String s = new String(temp, 0, leng);
+//                int dowloadlenInt = Integer.parseInt(s) - 1;
+//                //修改下载的开始位置
+//                startIndex += dowloadlenInt;
+//
+//            }
 
             URL url = new URL(getUrlPath());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(100);
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Range", "bytes=" + startIndex + "-" + endIndex);
+            String fileName = getUrlPath().substring(getUrlPath().lastIndexOf('/') + 1);
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_PARTIAL) {
 
-                file = new RandomAccessFile(getSavePath(), "rwd");
+                file = new RandomAccessFile(getSavePath()+fileName, "rwd");
                 inputStream = connection.getInputStream();
 
                 //定位文件从哪个位置开始写
@@ -74,31 +82,12 @@ public class SubThreadDownload extends DownLoader {
                         MultipleThreadDownloadManager.progress += len;
                     }
                     total += len;
-
-                    //以文件名加线程id保存为临时文件，保存当前线程的下载进度
-//                    RandomAccessFile info = new RandomAccessFile(getTempPath() + ".temp", "rwd");
-//                    info.write(String.valueOf(total + startIndex).getBytes());
-//                    info.close();
-
                 }
-
+                // 下载完成后，写入任务记分板文件
+                writeCompletedChunkToScoreboard(chunkIndex);
 
             }
             System.out.println("线程：" + threadId + "号下载完毕了");
-
-//            synchronized (MultipleThreadDownloadManager.class) {
-//                    //下载中的线程--，当减到0时代表整个文件下载完毕，如果中途异常，那么这个文件就没下载完
-//                    MultipleThreadDownloadManager.runningThread--;
-//                    if (MultipleThreadDownloadManager.runningThread == 0) {
-//                        for (int i = 0; i < MultipleThreadDownloadManager.threadCount; i++) {
-//                            File fileTemp = new File(getTempPath() + (i + 1) + ".temp");
-//                            fileTemp.delete();
-//                            System.out.println((i + 1) + ".txt下载完毕，清除临时文件");
-//                        }
-//
-//                    }
-//                }
-//
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +108,17 @@ public class SubThreadDownload extends DownLoader {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void writeCompletedChunkToScoreboard(long chunkIndex){
+        File scoreboardFile = new File(getSavePath(), "scoreboard.txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(scoreboardFile, true))) {
+            writer.write(Long.toString(chunkIndex));
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("写入任务记分板文件失败");
         }
     }
 }

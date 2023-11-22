@@ -8,13 +8,12 @@ import org.springframework.stereotype.Component;
  * @Description:
  **/
 @Data
-
 public abstract class DownLoader implements Runnable {
     private String urlPath;
 
     private String savePath;
 
-    private String tempPath = "M:\\";
+    private String tempPath = "M:\\temp\\";
 
     public boolean bpDownload = false;
 
