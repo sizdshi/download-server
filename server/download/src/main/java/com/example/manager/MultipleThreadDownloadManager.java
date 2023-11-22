@@ -108,7 +108,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
                 e.printStackTrace();
             }
             double downloadedPercentage =(double) downloadedChunks / (double) totalTasks  * 100;
-            System.out.println(String.format("%.2f" , downloadedPercentage));
+
             //当前下载进度除以文件总长得到下载进度
             double p = (double) temp / (double) len * (100-downloadedPercentage) +downloadedPercentage;
             //当前下载进度减去前一秒的下载进度就得到一秒内的下载速度

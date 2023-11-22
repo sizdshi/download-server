@@ -41,21 +41,6 @@ public class SubThreadDownload extends DownLoader {
         InputStream inputStream = null;
         RandomAccessFile file = null;
         try {
-            //检查是否存在记录下载长度的文件，如果存在就读取这个文件的数据
-//            File tempFile = new File(getTempPath() + ".temp");
-//            //检查断点继续下载
-//            if (tempFile.exists() && tempFile.length() > 0) {
-//                FileInputStream fileInputStream = new FileInputStream(tempFile);
-//                byte[] temp = new byte[1024];
-//                int leng = fileInputStream.read(temp);
-//                fileInputStream.close();
-//                String s = new String(temp, 0, leng);
-//                int dowloadlenInt = Integer.parseInt(s) - 1;
-//                //修改下载的开始位置
-//                startIndex += dowloadlenInt;
-//
-//            }
-
             URL url = new URL(getUrlPath());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(100);
@@ -67,24 +52,72 @@ public class SubThreadDownload extends DownLoader {
 
                 file = new RandomAccessFile(getSavePath()+fileName, "rwd");
                 inputStream = connection.getInputStream();
+//                FileChannel channel = file.getChannel();
+//                FileLock lock = channel.lock(startIndex,endIndex,false);
+//                if(lock ==null){
+//                    throw new IOException("未能获得锁");
+//                }else {
+//                    synchronized (file){
+//                        //定位文件从哪个位置开始写
+//                        file.seek(startIndex);
+//                        int len = 0;
+//                        byte[] buff = new byte[1024 * 1024];
+//                        //已经下载的数据长度
+//                        int total = 0;
+//
+//                        while ((len = inputStream.read(buff)) != -1) {
+//
+//                            file.write(buff, 0, len);
+//                            synchronized (MultipleThreadDownloadManager.class) {
+//                                MultipleThreadDownloadManager.progress += len;
+//                            }
+//                            total += len;
+//                        }
+//                        // 下载完成后，写入任务记分板文件
+//                        writeCompletedChunkToScoreboard(chunkIndex);
+//                    }
+//                    lock.release();
+//                }
 
                 //定位文件从哪个位置开始写
-                file.seek(startIndex);
-                int len = 0;
-                byte[] buff = new byte[1024 * 1024];
-                //已经下载的数据长度
-                int total = 0;
-
-                while ((len = inputStream.read(buff)) != -1) {
-
-                    file.write(buff, 0, len);
-                    synchronized (MultipleThreadDownloadManager.class) {
-                        MultipleThreadDownloadManager.progress += len;
+                try {
+                    synchronized (file){
+                        file.seek(startIndex);
+                        int len = 0;
+                        byte[] buff = new byte[1024 * 1024];
+                        //已经下载的数据长度
+                        int total = 0;
+                        while ((len = inputStream.read(buff)) != -1) {
+                            file.write(buff, 0, len);
+                            MultipleThreadDownloadManager.progress += len;
+                        }
+                        // 下载完成后，写入任务记分板文件
+                        writeCompletedChunkToScoreboard(chunkIndex);
                     }
-                    total += len;
+//                    file.seek(startIndex);
+//                    int len = 0;
+//                    byte[] buff = new byte[1024 * 1024];
+//                    //已经下载的数据长度
+//                    int total = 0;
+//
+//                    while ((len = inputStream.read(buff)) != -1) {
+//
+//                    file.write(buff, 0, len);
+//                    synchronized (MultipleThreadDownloadManager.class) {
+//                        MultipleThreadDownloadManager.progress += len;
+//                    }
+//                    total += len;
+//
+//
+//                    }
+//                    // 下载完成后，写入任务记分板文件
+//                    writeCompletedChunkToScoreboard(chunkIndex);
+                } finally {
+                    // 在 finally 块中释放锁，确保即使发生异常也会释放
+                    // 也可以使用 try-with-resources 语句以更好地管理资源
+                    file.close();
                 }
-                // 下载完成后，写入任务记分板文件
-                writeCompletedChunkToScoreboard(chunkIndex);
+
 
             }
             System.out.println("线程：" + threadId + "号下载完毕了");
