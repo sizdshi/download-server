@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
+/**   
  * @Author: Kenneth shi
  * @Description:
  **/
@@ -50,32 +50,6 @@ public class SubThreadDownload extends DownLoader {
 
                 file = new RandomAccessFile(getSavePath()+fileName, "rwd");
                 inputStream = connection.getInputStream();
-//                FileChannel channel = file.getChannel();
-//                FileLock lock = channel.lock(startIndex,endIndex,false);
-//                if(lock ==null){
-//                    throw new IOException("未能获得锁");
-//                }else {
-//                    synchronized (file){
-//                        //定位文件从哪个位置开始写
-//                        file.seek(startIndex);
-//                        int len = 0;
-//                        byte[] buff = new byte[1024 * 1024];
-//                        //已经下载的数据长度
-//                        int total = 0;
-//
-//                        while ((len = inputStream.read(buff)) != -1) {
-//
-//                            file.write(buff, 0, len);
-//                            synchronized (MultipleThreadDownloadManager.class) {
-//                                MultipleThreadDownloadManager.progress += len;
-//                            }
-//                            total += len;
-//                        }
-//                        // 下载完成后，写入任务记分板文件
-//                        writeCompletedChunkToScoreboard(chunkIndex);
-//                    }
-//                    lock.release();
-//                }
 
                 //定位文件从哪个位置开始写
                 try {

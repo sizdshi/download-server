@@ -1,7 +1,8 @@
 package com.example.downloadserver.service;
 
-import com.example.downloadserver.model.entity.Download;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.model.Download;
 
 import javax.servlet.http.HttpServletRequest;
 

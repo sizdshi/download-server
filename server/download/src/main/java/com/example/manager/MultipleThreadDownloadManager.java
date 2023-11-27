@@ -1,14 +1,25 @@
 package com.example.manager;
 
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.common.DownLoader;
+import com.example.common.ErrorCode;
+import com.example.downloadserver.mapper.DownloadMapper;
+import com.example.downloadserver.model.enums.DownloadStatus;
+import com.example.downloadserver.service.DownloadService;
+import com.example.exception.BusinessException;
+import com.example.model.Download;
 import com.example.service.SpeedListener;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 
@@ -16,25 +27,42 @@ import java.util.concurrent.*;
  * @Author: Kenneth shi
  * @Description:
  **/
-
+@Component
 public class MultipleThreadDownloadManager extends DownLoader {
-    //线程下载数量
+    /**
+     *线程下载数量
+     */
     public static int threadCount = 4;
-    //记录子线程数量
+
+    /**
+     *记录子线程数量
+     */
     public static int runningThread = 1;
-    //文件总大小
+    /**
+     * 文件大小
+     */
     public volatile static long len = 0;
-    //文件进度
+    /**
+     * 文件进度
+     */
     public volatile static int progress;
 
+    protected static String urlPath;
+
     private volatile boolean downloadInProgress = true;
+    private volatile boolean paused = false;
 
 
+
+    @Resource
+    private DownloadService downloadService;
+    @Resource
+    private DownloadMapper downloadMapper;
 
     public MultipleThreadDownloadManager(@Value("") String urlPath, @Value("") String savePath) {
-        super(urlPath, savePath);
+        super(urlPath,savePath);
+        MultipleThreadDownloadManager.urlPath=urlPath;
         createScoreboardFile();
-
     }
 
     public void setThreadCount(int threadCount) {
@@ -79,12 +107,12 @@ public class MultipleThreadDownloadManager extends DownLoader {
                 sonThreadDownload.setChunkIndex(i);
                 executorService.submit(sonThreadDownload);
             }
+            //关闭线程池,不再接受任务
             executorService.shutdown();
 
             //开始监听下载进度
-            speed();
-            // 启动一个单独的监控线程，用于实时更新下载进度
-//            new Thread(this::monitorProgress).start();
+            speed(executorService);
+
 
 
         } catch (Exception e) {
@@ -93,7 +121,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
 
     }
 
-    private void speed() {
+    private void speed(ExecutorService executorService) {
         long totalTasks = (long) Math.ceil((double) len / calculateChunkSize(len));
 
         int temp = 0;
@@ -103,7 +131,11 @@ public class MultipleThreadDownloadManager extends DownLoader {
             Set<Long> completedChunks = loadCompletedChunks();
             int downloadedChunks = completedChunks.size();
             try {
-                Thread.sleep(500);
+//                if(checkPauseRequest()){
+//
+//                }
+
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -251,5 +283,61 @@ public class MultipleThreadDownloadManager extends DownLoader {
         return true;
     }
 
+    @Scheduled(fixedDelay = 200)
+    private void pollDataBase(){
+        String status = getDataBaseStatus();
+        if(status == null || status.isEmpty()){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"未获取到Download对象");
+        }
+        handleDataBaseStatus(status);
+        System.out.println("轮询数据库"+status);
+    }
+
+    // 新增：从数据库中获取任务状态的示例方法（根据实际情况替换）
+    private String getDataBaseStatus() {
+        // 实现从数据库中获取任务状态的逻辑
+        LambdaQueryWrapper<Download> lambdaQueryWrapper = new LambdaQueryWrapper();
+        lambdaQueryWrapper.eq(Download::getFile_url, urlPath);
+        Download download = downloadService.getOne(lambdaQueryWrapper);
+        if(download == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"未获取到Download对象");
+        }
+        // 返回任务状态，例如 DownloadStatus.STATUS_PAUSED
+        return download.getStatus();
+    }
+
+    // 新增：根据数据库状态处理下载任务的方法
+    private void handleDataBaseStatus(String databaseStatus) {
+        switch (databaseStatus) {
+            case "STATUS_PAUSED":
+                pauseDownload();
+                break;
+            case "STATUS_DOWNLOADING":
+                resumeDownload();
+                break;
+            case "STATUS_DOWNLOADED":
+                stopDownload();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void stopDownload() {
+    }
+
+    public void resumeDownload() {
+        paused = false;
+
+    }
+
+    public void pauseDownload() {
+        paused = true;
+//        List<Runnable> runnableList =
+    }
+
+    private void checkPauseRequest() {
+
+    }
 
 }

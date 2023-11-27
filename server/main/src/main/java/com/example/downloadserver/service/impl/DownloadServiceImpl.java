@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.common.ErrorCode;
 import com.example.exception.BusinessException;
-import com.example.downloadserver.model.entity.Download;
+
 import com.example.downloadserver.model.enums.DownloadStatus;
 import com.example.downloadserver.service.DownloadService;
 import com.example.downloadserver.mapper.DownloadMapper;
+import com.example.model.Download;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
