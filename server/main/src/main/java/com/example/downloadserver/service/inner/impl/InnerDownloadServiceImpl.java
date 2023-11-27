@@ -15,7 +15,7 @@ import java.util.Map;
  * @Author: Kenneth shi
  * @Description:
  **/
-@DubboService
+
 public class InnerDownloadServiceImpl implements InnerDownloadService{
     @Resource
     private DownloadMapper downloadMapper;

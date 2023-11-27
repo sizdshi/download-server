@@ -1,5 +1,6 @@
 package com.example.downloadserver.model.enums;
 
+import lombok.Data;
 import lombok.Getter;
 
 /**

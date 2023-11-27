@@ -11,7 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Description:
  **/
 @SpringBootApplication
-@EnableDubbo
 @MapperScan("com.example.downloadserver.mapper")
 public class DownloaderMain {
 

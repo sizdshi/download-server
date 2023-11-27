@@ -13,7 +13,7 @@ public abstract class DownLoader implements Runnable {
 
     private String savePath;
 
-    private String tempPath = "M:\\temp\\";
+    private String tempPath = "L:\\temp\\";
 
     public boolean bpDownload = false;
 
@@ -21,6 +21,4 @@ public abstract class DownLoader implements Runnable {
         this.urlPath = urlPath;
         this.savePath = savePath;
     }
-
-
 }

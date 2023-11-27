@@ -1,12 +1,7 @@
 package com.example.controller;
 
 import com.example.manager.MultipleThreadDownloadManager;
-import com.example.service.RangeDownload;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: Kenneth shi
@@ -14,16 +9,18 @@ import javax.servlet.http.HttpServletResponse;
  **/
 @RestController
 @RequestMapping("/files")
-public class FileController {
+public class HttpController {
 
 
 //    @Resource
 //    private RangeDownload rangeDownload;
 
     String fileUrl = "https://dldir1.qq.com/qqfile/qq/PCQQ9.7.19/QQ9.7.19.29259.exe";
-    String savePath = "QQ9.7.19.29259.exe";;
+    String savePath = "QQ9.7.19.29259.exe";
 
 
+//    @Resource
+//    private MultipleThreadDownloadManager manager;
 
 //    @RequestMapping(value = "/file/chunk/download", method = RequestMethod.GET)
 //    public void fileChunkDownload(@RequestHeader(value = "Range") String range,
@@ -32,17 +29,18 @@ public class FileController {
 //    }
 
     @GetMapping("/down")
-    public void fileDownload(){
+    public void fileDownload() {
 
-        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "M:\\temp\\");
+        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "L:\\test\\");
         //设置线程数
+
         threadDownload.setThreadCount(4);
 
         //添加进度和网速监听
-        threadDownload.addSpeedListener((s,progress)->{
-            String m=String.format("%.2f",(double) s/1024/1024);
-            String pro=String.format("%.2f",progress);
-            System.out.println(m+"m/s--进度："+pro+"%");
+        threadDownload.addSpeedListener((s, progress) -> {
+            String m = String.format("%.2f", (double) s / 1024 / 1024);
+            String pro = String.format("%.2f", progress);
+            System.out.println(m + "m/s--进度：" + pro + "%");
         });
 
         threadDownload.run();
