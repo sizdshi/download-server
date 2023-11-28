@@ -39,6 +39,7 @@
                 <version>2.5.15</version>
                 <configuration>
                     <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                    <skip>false</skip>
                 </configuration>
                 <executions>
                     <execution>
