@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="http://restcontent.rddoc.cn/static/tailwind-3.3.2.js"></script>
-
+    <script src="https://cms.ruzhila.cn/static/tailwind-3.3.2.js"></script>
     <script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js" defer></script>
     <script src="./api.js"></script>
@@ -15,12 +14,12 @@
         function initSetting() {
             return {
                 settings: {},
-                async fetchData(){
-                    await fetchSettings().then(res=>{
+                async fetchData() {
+                    await fetchSettings().then(res => {
                         this.settings = res
                     })
                 },
-                async saveData(){
+                async saveData() {
                     let data = {
                         downloadPath: this.settings.downloadPath,
                         maxTasks: this.settings.maxTasks,
@@ -62,12 +61,13 @@
             <span> Settings</span>
         </a>
     </div>
-    <div x-data="initSetting()"  x-init="fetchData()"   class="space-y-10 w-full flex-grow pl-10">
+    <div x-data="initSetting()" x-init="fetchData()" class="space-y-10 w-full flex-grow pl-10">
         <p class="font-semibold text-xl -mt-4">Settings</p>
 
         <div class="text-gray-700 w-full">
             <p class="text-lg font-semibold">Download Path</p>
-            <input type="text" placeholder="/data/downloads" x-model="settings.downloadPath" class="flex-grow rounded mt-2 w-full">
+            <input type="text" placeholder="/data/downloads" x-model="settings.downloadPath"
+                class="flex-grow rounded mt-2 w-full">
         </div>
         <div class="text-gray-700 w-full">
             <div class="flex items-center space-x-6">
@@ -99,11 +99,13 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                <input type="number" placeholder="1" x-model="settings.maxUploadSpeed"  class="rounded mt-2 w-40">
+                <input type="number" placeholder="1" x-model="settings.maxUploadSpeed" class="rounded mt-2 w-40">
                 <p>Mb/s</p>
             </div>
         </div>
-        <div @click="saveData" class="bg-indigo-600 text-white px-6 py-1.5 rounded-full w-40 h-auto text-center cursor-pointer">Save Setting</div>
+        <div @click="saveData"
+            class="bg-indigo-600 text-white px-6 py-1.5 rounded-full w-40 h-auto text-center cursor-pointer">Save
+            Setting</div>
     </div>
 </div>
 </body>
