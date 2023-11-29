@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.ErrorCode;
 import com.example.downloadserver.model.dto.DownloadRequest;
 import com.example.downloadserver.model.dto.SubmitRequest;
+import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.vo.DownloadVO;
 import com.example.exception.BusinessException;
 import com.example.model.BaseResponse;
 import com.example.downloadserver.service.DownloadService;
-import com.example.model.Download;
 import com.example.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -171,7 +171,7 @@ public class TransferController {
         Page<Download> downloadPage = downloadService.page(new Page<>(current,size),
                 downloadService.getQueryWrapper(downloadRequest));
 
-        return ResultUtils.success(downloadService.listDownloadVOByPage(downloadRequest,request));
+        return ResultUtils.success(downloadService.getDownloadVOPage(downloadPage,request));
     }
 
 

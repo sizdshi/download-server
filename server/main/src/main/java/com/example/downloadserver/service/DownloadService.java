@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.downloadserver.model.dto.DownloadRequest;
+import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.vo.DownloadVO;
-import com.example.model.Download;
 
 import javax.servlet.http.HttpServletRequest;
 

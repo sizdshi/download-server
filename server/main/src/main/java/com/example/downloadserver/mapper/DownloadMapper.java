@@ -2,7 +2,7 @@ package com.example.downloadserver.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.example.model.Download;
+import com.example.downloadserver.model.entity.Download;
 
 /**
 * @author sizd-shi

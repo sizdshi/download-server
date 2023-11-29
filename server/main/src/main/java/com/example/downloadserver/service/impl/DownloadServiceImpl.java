@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.ErrorCode;
 import com.example.downloadserver.constant.CommonConstant;
 import com.example.downloadserver.model.dto.DownloadRequest;
+import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.vo.DownloadVO;
 import com.example.downloadserver.utils.SqlUtils;
 import com.example.exception.BusinessException;
@@ -15,7 +16,6 @@ import com.example.exception.BusinessException;
 import com.example.downloadserver.model.enums.DownloadStatus;
 import com.example.downloadserver.service.DownloadService;
 import com.example.downloadserver.mapper.DownloadMapper;
-import com.example.model.Download;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -204,10 +203,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {
         long current = downloadRequest.getCurrent();
         long size = downloadRequest.getPageSize();
-    // 查询总记录数
-        long total = this.count(this.getQueryWrapper(downloadRequest));
 
-        Page<Download> downloadPage = this.page(new Page<>(current,size,total),this.getQueryWrapper(downloadRequest));
+        Page<Download> downloadPage = this.page(new Page<>(current,size),this.getQueryWrapper(downloadRequest));
 
         return this.getDownloadVOPage(downloadPage,request);
     }
@@ -229,12 +226,12 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         String sortOrder = downloadRequest.getSortOrder();
 
 
-        downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(url),"url",url)
-                .eq(ObjectUtils.isNotEmpty(status),"status",status)
-                .eq(ObjectUtils.isNotEmpty(id),"id",id)
-                .eq(ObjectUtils.isNotEmpty(fileName),"file_name",fileName)
-                .eq("is_delete",false)
-                .orderBy(SqlUtils.validSortField(sortField),sortOrder.equals(CommonConstant.SORT_ORDER_ASC)
+        downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(url),"url",url);
+        downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(status),"status",status);
+        downloadQueryWrapper.ne(ObjectUtils.isNotEmpty(id),"id",id);
+        downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(fileName),"file_name",fileName);
+//        downloadQueryWrapper.eq("is_delete",false);
+        downloadQueryWrapper.orderBy(SqlUtils.validSortField(sortField),sortOrder.equals(CommonConstant.SORT_ORDER_ASC)
                         ,sortField);
 
         return downloadQueryWrapper;
