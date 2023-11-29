@@ -1,6 +1,22 @@
 /**
  * @returns {Array} 返回所有的设置项
  */
+async function axiosRequest(method, urlSuffix, data) {
+    const baseUrl = "http://localhost:8011";
+    const fullUrl = `${baseUrl}/${urlSuffix}`;
+
+    return axios({
+        method: method,
+        url: fullUrl,
+        data: data,
+        params: method === "GET" ? data : undefined,
+    })
+        .then(response => response.data)
+        .catch(error => {
+            console.error('错误:', error);
+            throw error;
+        });
+}
 
 // 设置页面 api,下面是需要返回给我的数据格式
 async function fetchSettings() {
@@ -346,9 +362,19 @@ async function fetchTasks(params) {
     }
 }
 
+
 async function submitDownloadPath(path) {
     console.log(path)
-    return true
+    const requestData = {
+        url: path
+    };
+    return axiosRequest("POST", "task/submit",requestData).then(data => {
+        this.message = data.message; // 假设响应包含 'message' 属性
+        console.log(data.message);
+    })
+        .catch(error => {
+            // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
+        });
 }
 
 // 重新下载任务的详细信息，ids是一个数组，单个任务，就是一个元素的数组，多个任务就是多个元素的数组，实现同一个接口单量和多量的处理
@@ -376,6 +402,8 @@ async function pauseTask(ids) {
     console.log(ids)
     return true
 }
+
+
 
 // 恢复下载任务，ids是一个数组
 async function resumeTask(ids) {

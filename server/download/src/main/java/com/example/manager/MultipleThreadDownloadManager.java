@@ -52,6 +52,8 @@ public class MultipleThreadDownloadManager extends DownLoader {
     private volatile boolean downloadInProgress = true;
     private volatile boolean paused = false;
 
+    private ThreadPoolExecutor executor;
+
 
 
     @Resource
@@ -62,12 +64,17 @@ public class MultipleThreadDownloadManager extends DownLoader {
     public MultipleThreadDownloadManager(@Value("") String urlPath, @Value("") String savePath) {
         super(urlPath,savePath);
         MultipleThreadDownloadManager.urlPath=urlPath;
+        executor = new ThreadPoolExecutor(threadCount,threadCount,0,TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(),new ThreadPoolExecutor.CallerRunsPolicy());
         createScoreboardFile();
     }
 
     public void setThreadCount(int threadCount) {
         MultipleThreadDownloadManager.threadCount = threadCount;
-        runningThread = threadCount;
+        if(executor != null) {
+            executor.setCorePoolSize(threadCount);
+            executor.setMaximumPoolSize(threadCount);
+        }
     }
 
 
@@ -76,15 +83,12 @@ public class MultipleThreadDownloadManager extends DownLoader {
         try {
 
             long totalFileSize = getTotalFileSize(getUrlPath());
-
             MultipleThreadDownloadManager.len = totalFileSize;
             long chunkSize = calculateChunkSize(totalFileSize);
 
             String fileName = getUrlPath().substring(getUrlPath().lastIndexOf('/') + 1);
             RandomAccessFile file = new RandomAccessFile(getTempPath()+fileName, "rw");
             file.setLength(totalFileSize);
-
-            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 
             //读取任务完成记分板文件
             Set<Long> completedChunks = loadCompletedChunks();
@@ -105,13 +109,13 @@ public class MultipleThreadDownloadManager extends DownLoader {
                 SubThreadDownload sonThreadDownload = new SubThreadDownload(getUrlPath(), getSavePath());
                 sonThreadDownload.setter(i, startIndex, endIndex);
                 sonThreadDownload.setChunkIndex(i);
-                executorService.submit(sonThreadDownload);
+                executor.submit(sonThreadDownload);
             }
             //关闭线程池,不再接受任务
-            executorService.shutdown();
+            executor.shutdown();
 
             //开始监听下载进度
-            speed(executorService);
+            speed(executor);
 
 
 
@@ -131,10 +135,6 @@ public class MultipleThreadDownloadManager extends DownLoader {
             Set<Long> completedChunks = loadCompletedChunks();
             int downloadedChunks = completedChunks.size();
             try {
-//                if(checkPauseRequest()){
-//
-//                }
-
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -324,6 +324,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
     }
 
     private void stopDownload() {
+
     }
 
     public void resumeDownload() {
@@ -339,5 +340,6 @@ public class MultipleThreadDownloadManager extends DownLoader {
     private void checkPauseRequest() {
 
     }
+
 
 }
