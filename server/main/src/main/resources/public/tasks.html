@@ -34,7 +34,7 @@
                     }
                     await fetchTasks(data).then(res => {
                         this.tasks = res
-                        this.taskData = res.items
+                        this.taskData = res.records
                         console.log(res)
                     })
                 },
@@ -126,21 +126,7 @@
             }
         }
 
-        function axiosRequest(method, urlSuffix, data) {
-            const baseUrl = "http://localhost:8011";
-            const fullUrl = `${baseUrl}/${urlSuffix}`;
 
-            return axios({
-                method: method,
-                url: fullUrl,
-                data: data,
-            })
-                .then(response => response.data)
-                .catch(error => {
-                    console.error('错误:', error);
-                    throw error;
-                });
-        }
     </script>
 </head>
 <div class="w-full h-full">
