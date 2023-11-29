@@ -1,7 +1,7 @@
 package com.example.downloadserver.model.vo;
 
 
-import com.example.model.Download;
+import com.example.downloadserver.model.entity.Download;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
