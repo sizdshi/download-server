@@ -2,16 +2,14 @@ package com.example.downloadserver.controller;
 
 
 import com.example.common.ErrorCode;
+import com.example.downloadserver.model.dto.SubmitRequest;
 import com.example.exception.BusinessException;
 import com.example.model.BaseResponse;
 import com.example.downloadserver.service.DownloadService;
 import com.example.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -152,11 +150,11 @@ public class TransferController {
     }
 
     @PostMapping("/submit")
-    public BaseResponse<Object> submit(@RequestParam("url")String url){
-        if(!StringUtils.isNotEmpty(url)){
+    public BaseResponse<Object> submit(@RequestBody SubmitRequest submitRequest){
+        if(!StringUtils.isNotEmpty(submitRequest.getUrl())){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        long result = downloadService.submit(url);
+        long result = downloadService.submit(submitRequest.getUrl());
         return ResultUtils.success(result);
     }
 
