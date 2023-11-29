@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
 * @author sizd-shi
@@ -145,11 +146,11 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
 
+        String urlPattern = "^(http|https):\\/\\/(www\\.)?([a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(:\\d+)?(\\/\\S*)?$";
+        if(!Pattern.matches(urlPattern,url)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不合法的URL");
+        }
 
-//        String urlPattern = "^(http|https):\\/\\/(?:www\\.)?([a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*|\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(:\\d+)?(\\/\\S*)?$\n";
-//        if(!Pattern.matches(urlPattern,url)){
-//            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不合法的URL");
-//        }
 
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         invokeLambdaUpdateWrapper.eq(Download::getUrl,url);
@@ -162,7 +163,10 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
 
         download.setUrl(url);
         download.setUpdate_time(new Date());
+        download.setCreate_time(new Date());
         boolean saveResult = this.save(download);
+
+
         if(!saveResult){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 提交任务失败 数据库异常");
         }

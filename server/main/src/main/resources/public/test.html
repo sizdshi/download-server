@@ -1,15 +1,143 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
+<!--    <title>Alpine.js 调用封装的 Axios</title>-->
+<!--    <script src="./myAxios.js" type="module"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>-->
+
+<!--</head>-->
+<!--&lt;!&ndash;<body x-data="{ message: 'Waiting for response...' }">&ndash;&gt;-->
+<!--&lt;!&ndash;<div>&ndash;&gt;-->
+<!--&lt;!&ndash;    <p x-text="message"></p>&ndash;&gt;-->
+<!--&lt;!&ndash;    <button @click="getData">获取数据</button>&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;    function getData() {&ndash;&gt;-->
+<!--&lt;!&ndash;        const requestData = new URLSearchParams();&ndash;&gt;-->
+<!--&lt;!&ndash;        requestData.append('id', '1705234447153963010');&ndash;&gt;-->
+<!--&lt;!&ndash;        myAxios.post("/task/start", requestData)&ndash;&gt;-->
+<!--&lt;!&ndash;            .then(response => {&ndash;&gt;-->
+<!--&lt;!&ndash;                this.message = response.data.message; // 假设响应包含 'message' 属性&ndash;&gt;-->
+<!--&lt;!&ndash;                console.log(response.data.message)&ndash;&gt;-->
+<!--&lt;!&ndash;            })&ndash;&gt;-->
+<!--&lt;!&ndash;            .catch(error => {&ndash;&gt;-->
+<!--&lt;!&ndash;                console.error('错误:', error);&ndash;&gt;-->
+<!--&lt;!&ndash;            });&ndash;&gt;-->
+<!--&lt;!&ndash;        // 使用封装的 Axios 实例&ndash;&gt;-->
+<!--&lt;!&ndash;        // myAxios.get('/task/start')&ndash;&gt;-->
+<!--&lt;!&ndash;        //     .then(response => {&ndash;&gt;-->
+<!--&lt;!&ndash;        //         // 请求成功时更新 message 变量&ndash;&gt;-->
+<!--&lt;!&ndash;        //         this.message = 'Data received: ' + JSON.stringify(response.data);&ndash;&gt;-->
+<!--&lt;!&ndash;        //     })&ndash;&gt;-->
+<!--&lt;!&ndash;        //     .catch(error => {&ndash;&gt;-->
+<!--&lt;!&ndash;        //         // 请求失败时更新 message 变量&ndash;&gt;-->
+<!--&lt;!&ndash;        //         this.message = 'Error: ' + error.message;&ndash;&gt;-->
+<!--&lt;!&ndash;        //     });&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+<!--<body class="p-10">-->
+
+<!--<div x-data="data()" x-init="mounted()" class="mt-16 xxl:mt-0 xxl:ml-auto">-->
+<!--    <h4 class="font-bold text-lg">Axios example with Alpine js</h4>-->
+<!--    <p>in this example we are using https://reqres.in</p>-->
+
+<!--    <div style="height:25px;" class="mt-6">-->
+<!--        <p x-show.transition="ok" style="display: none;" class="bg-blue-500 text-white rounded inline py-1 px-2">updated!</p>-->
+<!--    </div>-->
+
+<!--    <div class="mt-4">-->
+<!--        <label><input x-model="dato1" x-bind:checked="dato1" @click="inviaValoriCheckBox(dato1)"  type="checkbox" class="border border-1">-->
+<!--            axios get https://reqres.in/api/unknown/2-->
+<!--        </label>-->
+<!--    </div>-->
+
+<!--    <p x-show.transition="axiosResponse" x-text="axiosResponse"></p>-->
+
+<!--</div>-->
+<!--<script>-->
+<!--    -->
+<!--    function data(){-->
+
+<!--        return {-->
+<!--            dato1: '',-->
+<!--            axiosResponse: '',-->
+<!--            ok: false,-->
+<!--            inviaValoriCheckBox(val, servizio){-->
+
+<!--            },-->
+<!--            mounted(){-->
+<!--                console.log('mounted');-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Alpine.js 调用封装的 Axios</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" type="module"></script>
+    <!--    <script src="./myAxios.js" ></script>-->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
 </head>
-<body>
-    <div x-data="{ message: 'Hello, Alpine.js!' }">
-        <p x-text="message"></p>
-      </div>
+<body x-data="getData()">
+<div>
+    <p x-text="message"></p>
+    <button @click="startHandle">获取数据</button>
+</div>
+
+<script>
+    let message = '';
+
+    function axiosRequest(method, urlSuffix, data) {
+        const baseUrl = "http://localhost:8011";
+        const fullUrl = `${baseUrl}/${urlSuffix}`;
+
+        return axios({
+            method: method,
+            url: fullUrl,
+            data: data,
+        })
+            .then(response => response.data)
+            .catch(error => {
+                console.error('错误:', error);
+                throw error;
+            });
+    }
+
+    function getData() {
+        const requestData = new URLSearchParams();
+        requestData.append('id', '1705234447153963010');
+        return {
+            startHandle() {
+                    message: '',
+                    axiosRequest("POST", "task/start", requestData)
+                        .then(data => {
+                            this.message = data.message; // 假设响应包含 'message' 属性
+                            console.log(data.message);
+                        })
+                        .catch(error => {
+                            // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
+                        });
+            }
+            // 使用封装的 Axios 实例
+        }
+
+    }
+</script>
 </body>
 </html>
+

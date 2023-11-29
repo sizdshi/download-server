@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="http://restcontent.rddoc.cn/static/tailwind-3.3.2.js"></script>
-
+     <script src="https://cms.ruzhila.cn/static/tailwind-3.3.2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" type="module"></script>
     <script type="module" src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine-ie11.min.js" defer></script>
     <script src="./api.js"></script>
@@ -124,6 +124,22 @@
                     await this.fetchData()
                 },
             }
+        }
+
+        function axiosRequest(method, urlSuffix, data) {
+            const baseUrl = "http://localhost:8011";
+            const fullUrl = `${baseUrl}/${urlSuffix}`;
+
+            return axios({
+                method: method,
+                url: fullUrl,
+                data: data,
+            })
+                .then(response => response.data)
+                .catch(error => {
+                    console.error('错误:', error);
+                    throw error;
+                });
         }
     </script>
 </head>
