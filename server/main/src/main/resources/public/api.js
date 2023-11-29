@@ -20,18 +20,62 @@ async function axiosRequest(method, urlSuffix, data) {
 
 // 设置页面 api,下面是需要返回给我的数据格式
 async function fetchSettings() {
-    return {
-        downloadPath: '/data/mock_dir',
-        maxTasks: 4,
-        maxDownloadSpeed: 10,
-        maxUploadSpeed: 12
+    try {
+        const response = await fetch('settings/get');
+        if (!response.ok) {
+            throw new Error('请求失败');
+        }
+        const data = await response.json();
+
+        console.log('asd',data)
+        return {
+            downloadPath: data.setting.storePath,
+            maxTasks: data.setting.maxTasks,
+            maxDownloadSpeed: data.setting.maxDownloadSpeed,
+            maxUploadSpeed: data.setting.maxUploadSpeed
+        };
+    } catch (error) {
+        console.error(error);
+        // 返回默认值或进行其他错误处理逻辑
+        return {
+            downloadPath: '',
+            maxTasks: 0,
+            maxDownloadSpeed: 0,
+            maxUploadSpeed: 0
+        };
     }
 }
 
 // 保存设置
 async function saveSettings(settings) {
-    console.log(settings)
-    return true
+    // console.log(settings)
+    // return true
+    try {
+        const data = {
+            storePath: settings.downloadPath,
+            maxTasks: settings.maxTasks,
+            maxDownloadSpeed: settings.maxDownloadSpeed,
+            maxUploadSpeed: settings.maxUploadSpeed
+        };
+
+        const response = await fetch('settings/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error('请求失败');
+            alert('修改失败')
+            return false
+        }
+        alert('修改成功')
+        return true
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 // file 页面 api
