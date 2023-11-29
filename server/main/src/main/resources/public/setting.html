@@ -74,7 +74,7 @@
                 <p class="text-lg font-semibold">Max Tasks </p>
                 <p>Allow maximum task parallelism</p>
             </div>
-            <input type="number" placeholder="1" x-model="settings.maxTasks" class="rounded mt-2 w-40">
+            <input type="number" placeholder="1" x-model="settings.maxTasks" class="rounded mt-2 w-40" min="0">
         </div>
 
         <div class="text-gray-700 w-full">
@@ -85,7 +85,7 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                <input type="number" placeholder="1" x-model="settings.maxDownloadSpeed" class="rounded mt-2 w-40">
+                <input type="number" placeholder="1" x-model="settings.maxDownloadSpeed" class="rounded mt-2 w-40" min="0">
                 <p> Mb/s</p>
             </div>
         </div>
@@ -99,7 +99,7 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                <input type="number" placeholder="1" x-model="settings.maxUploadSpeed"  class="rounded mt-2 w-40">
+                <input type="number" placeholder="1" x-model="settings.maxUploadSpeed"  class="rounded mt-2 w-40" min="0">
                 <p>Mb/s</p>
             </div>
         </div>
