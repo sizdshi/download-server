@@ -21,10 +21,11 @@ async function axiosRequest(method, urlSuffix, data) {
 // 设置页面 api,下面是需要返回给我的数据格式
 async function fetchSettings() {
     try {
-        const response = await fetch('settings/get');
+        const response = await fetch('/settings');
         if (!response.ok) {
-            throw new Error('请求失败');
+            throw new Error('request failed');
         }
+
         const data = await response.json();
 
         console.log('asd',data)
@@ -58,7 +59,7 @@ async function saveSettings(settings) {
             maxUploadSpeed: settings.maxUploadSpeed
         };
 
-        const response = await fetch('settings/post', {
+        const response = await fetch('/settings', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -67,11 +68,11 @@ async function saveSettings(settings) {
         });
 
         if (!response.ok) {
-            throw new Error('请求失败');
-            alert('修改失败')
+            throw new Error('request failed');
+            alert('failed to save')
             return false
         }
-        alert('修改成功')
+        alert('save successfully')
         return true
     } catch (error) {
         console.error(error);
