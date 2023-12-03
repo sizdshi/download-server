@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -111,13 +112,25 @@ public class FileController {
             Date createDate = new Date(createTime);
 
             fileInfo.setName(f.getName());
-            fileInfo.setSize(String.valueOf(f.length()));
+
+            if(f.length()==0){
+                fileInfo.setSize("");
+            }else if(f.length()>0 && f.length()<1024){
+                double size = f.length();
+                fileInfo.setSize(formatSize(size)+"B");
+            }else if(f.length()>1024 && f.length()<1024*1024){
+                double size = f.length()/1024.0;
+                fileInfo.setSize(formatSize(size)+"KB");
+            }else if(f.length()>1024*1024 && f.length()<1024*1024*1024){
+                double size = f.length()/1024.0/1024.0;
+                fileInfo.setSize(formatSize(size)+"MB");
+            }else if(f.length()>1024*1024*1024){
+                double size = f.length()/1024.0/1024.0/1024.0;
+                fileInfo.setSize(formatSize(size)+"GB");
+            }
             fileInfo.setCreatedAt(sdf.format(createDate));
             fileInfo.setDirectory(f.isDirectory());
             fileInfo.setPath("\\" + f.getName());
-
-
-
             filenames.add(fileInfo);
         }
 
@@ -142,5 +155,10 @@ public class FileController {
             default:
                 return false;
         }
+    }
+
+    private static String formatSize(double size) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(size);
     }
 }
