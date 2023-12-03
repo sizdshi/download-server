@@ -87,152 +87,154 @@ async function saveSettings(settings) {
 
 async function fetchFileList(path, filter) {
     console.log(path, filter)
-    if (filter === undefined) {
-        if (path === undefined || path === '/file') {
-            return [
-                {
-                    name: 'Test1',
-                    isDirectory: true,
-                    path: '/data/mock_dir/test1',
-                    size: 0,
-                    createdAt: '2023-11-11',
-                    children: [
-                        {
-                            name: 'Test1-1',
-                            isDirectory: true,
-                            path: '/test1-1',
-                            size: null,
-                            createdAt: '2023-11-11',
-                            children: [{
-                                name: 'Test1-1-1',
-                                isDirectory: true,
-                                path: '/test1-1-1',
-                                size: '100KB',
-                                createdAt: '2023-11-11',
-                                children: [{
-                                    name: 'Test1-1-1-1',
-                                    isDirectory: false,
-                                    type: 'txt',
-                                    path: '/test1-1-1-1',
-                                    size: '100KB',
-                                    createdAt: '2023-11-11'
-                                }]
-                            }]
-                        },
-                        {
-                            name: 'Test1-2.pdf',
-                            isDirectory: false,
-                            type: 'pdf',
-                            path: '/test1-2',
-                            size: '100KB',
-                            createdAt: '2023-11-11'
-                        }]
-                },
-                {
-                    name: 'Test2.txt',
-                    isDirectory: false,
-                    type: 'txt',
-                    path: '/data/mock_dir/test2',
-                    size: '20KB',
-                    createdAt: '2023-11-13'
-                },
-                {
-                    name: 'Test3.gif',
-                    isDirectory: false,
-                    type: 'gif',
-                    path: '/data/mock_dir/test3',
-                    size: '1MB',
-                    createdAt: '2023-11-12'
-                },
-            ]
-        }
-        if (path === '/data/mock_dir/test1') {
-            return [
-                {
-                    name: 'Test1-1',
-                    isDirectory: true,
-                    path: '/test1-1',
-                    size: null,
-                    createdAt: '2023-11-11',
-                    children: [{
-                        name: 'Test1-1-1',
-                        isDirectory: true,
-                        path: '/test1-1-1',
-                        size: '100KB',
-                        createdAt: '2023-11-11',
-                        children: [{
-                            name: 'Test1-1-1-1',
-                            isDirectory: false,
-                            type: 'txt',
-                            path: '/test1-1-1-1',
-                            size: '100KB',
-                            createdAt: '2023-11-11'
-                        }]
-                    }]
-                },
-                {
-                    name: 'Test1-2.pdf',
-                    isDirectory: false,
-                    type: 'pdf',
-                    path: '/test1-2',
-                    size: '100KB',
-                    createdAt: '2023-11-11'
-                }]
-        }
-        if (path === '/data/mock_dir/test2') {
-            return [
-                {
-                    name: 'Test2.txt',
-                    isDirectory: false,
-                    type: 'txt',
-                    path: '/data/mock_dir/test2',
-                    size: '20KB',
-                    createdAt: '2023-11-13'
-                }
-            ]
-        }
-        if (path === '/test1-1') {
-            return [
-                {
-                    name: 'Test1-1-1',
-                    isDirectory: true,
-                    path: '/test1-1-1',
-                    size: '100KB',
-                    createdAt: '2023-11-11',
-                    children: [{
-                        name: 'Test1-1-1-1',
-                        isDirectory: false,
-                        type: 'txt',
-                        path: '/test1-1-1-1',
-                        size: '100KB',
-                        createdAt: '2023-11-11'
-                    }]
-                }
-            ]
-        }
-        if (path === '/test1-1-1') {
-            return [
-                {
-                    name: 'Test1-1-1-1',
-                    isDirectory: false,
-                    type: 'txt',
-                    path: '/test1-1-1-1',
-                    size: '100KB',
 
-                    createdAt: '2023-11-11'
-                }
-            ]
-        }
-    } else {
-        return {
-            name: 'test.测试用例类型',
-            isDirectory: false,
-            type: '测试用例类型',
-            path: '/data/mock_dir/test3',
-            size: '1MB',
-            createdAt: '2023-11-12'
-        }
-    }
+    // if (filter === undefined) {
+    //     if (path === undefined || path === 'D:\\Pictures') {
+    //         return [
+    //             {
+    //                 name: 'Test1',
+    //                 isDirectory: true,
+    //                 path: '/data/mock_dir/test1',
+    //                 size: 0,
+    //                 createdAt: '2023-11-11',
+    //                 children: [
+    //                     {
+    //                         name: 'Test1-1',
+    //                         isDirectory: true,
+    //                         path: '/test1-1',
+    //                         size: null,
+    //                         createdAt: '2023-11-11',
+    //                         children: [{
+    //                             name: 'Test1-1-1',
+    //                             isDirectory: true,
+    //                             path: '/test1-1-1',
+    //                             size: '100KB',
+    //                             createdAt: '2023-11-11',
+    //                             children: [{
+    //                                 name: 'Test1-1-1-1',
+    //                                 isDirectory: false,
+    //                                 type: 'txt',
+    //                                 path: '/test1-1-1-1',
+    //                                 size: '100KB',
+    //                                 createdAt: '2023-11-11'
+    //                             }]
+    //                         }]
+    //                     },
+    //                     {
+    //                         name: 'Test1-2.pdf',
+    //                         isDirectory: false,
+    //                         type: 'pdf',
+    //                         path: '/test1-2',
+    //                         size: '100KB',
+    //                         createdAt: '2023-11-11'
+    //                     }]
+    //             },
+    //             {
+    //                 name: 'Test2.txt',
+    //                 isDirectory: false,
+    //                 type: 'txt',
+    //                 path: '/data/mock_dir/test2',
+    //                 size: '20KB',
+    //                 createdAt: '2023-11-13'
+    //             },
+    //             {
+    //                 name: 'Test3.gif',
+    //                 isDirectory: false,
+    //                 type: 'gif',
+    //                 path: '/data/mock_dir/test3',
+    //                 size: '1MB',
+    //                 createdAt: '2023-11-12'
+    //             },
+    //         ]
+    //     }
+    //     if (path === '/data/mock_dir/test1') {
+    //         return [
+    //             {
+    //                 name: 'Test1-1',
+    //                 isDirectory: true,
+    //                 path: '/test1-1',
+    //                 size: null,
+    //                 createdAt: '2023-11-11',
+    //                 children: [{
+    //                     name: 'Test1-1-1',
+    //                     isDirectory: true,
+    //                     path: '/test1-1-1',
+    //                     size: '100KB',
+    //                     createdAt: '2023-11-11',
+    //                     children: [{
+    //                         name: 'Test1-1-1-1',
+    //                         isDirectory: false,
+    //
+    //                         type: 'txt',
+    //                         path: '/test1-1-1-1',
+    //                         size: '100KB',
+    //                         createdAt: '2023-11-11'
+    //                     }]
+    //                 }]
+    //             },
+    //             {
+    //                 name: 'Test1-2.pdf',
+    //                 isDirectory: false,
+    //                 type: 'pdf',
+    //                 path: '/test1-2',
+    //                 size: '100KB',
+    //                 createdAt: '2023-11-11'
+    //             }]
+    //     }
+    //     if (path === '/data/mock_dir/test2') {
+    //         return [
+    //             {
+    //                 name: 'Test2.txt',
+    //                 isDirectory: false,
+    //                 type: 'txt',
+    //                 path: '/data/mock_dir/test2',
+    //                 size: '20KB',
+    //                 createdAt: '2023-11-13'
+    //             }
+    //         ]
+    //     }
+    //     if (path === '/test1-1') {
+    //         return [
+    //             {
+    //                 name: 'Test1-1-1',
+    //                 isDirectory: true,
+    //                 path: '/test1-1-1',
+    //                 size: '100KB',
+    //                 createdAt: '2023-11-11',
+    //                 children: [{
+    //                     name: 'Test1-1-1-1',
+    //                     isDirectory: false,
+    //                     type: 'txt',
+    //                     path: '/test1-1-1-1',
+    //                     size: '100KB',
+    //                     createdAt: '2023-11-11'
+    //                 }]
+    //             }
+    //         ]
+    //     }
+    //     if (path === '/test1-1-1') {
+    //         return [
+    //             {
+    //                 name: 'Test1-1-1-1',
+    //                 isDirectory: false,
+    //                 type: 'txt',
+    //                 path: '/test1-1-1-1',
+    //                 size: '100KB',
+    //
+    //                 createdAt: '2023-11-11'
+    //             }
+    //         ]
+    //     }
+    // } else {
+    //     return {
+    //         name: 'test.测试用例类型',
+    //         isDirectory: false,
+    //         type: '测试用例类型',
+    //         path: '/data/mock_dir/test3',
+    //         size: '1MB',
+    //         createdAt: '2023-11-12'
+    //     }
+    // }
 }
 
 //  TODO: 查找符合path的文件，然后根据filter进行过滤
