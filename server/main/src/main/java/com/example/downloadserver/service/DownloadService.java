@@ -31,6 +31,8 @@ public interface DownloadService extends IService<Download> {
 
     String submit(String url);
 
+
+
     Page<DownloadVO> getDownloadVOPage(Page<Download> downloadPage,HttpServletRequest request);
 
     Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest,HttpServletRequest request);

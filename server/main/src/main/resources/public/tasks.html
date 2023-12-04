@@ -116,11 +116,20 @@
                     }
                 },
                 async filterTask(optionValue) {
-                    await fetchFilterTasks(optionValue).then(res => {
-                        this.tasks = res
-                        this.taskData = res.records
-                        console.log(res)
-                    })
+                    let data = {
+                        status: optionValue,
+                        currentPage: this.currentPage,
+                        limit: this.limit
+                    }
+                    if (optionValue === 'all') {
+                        await this.fetchData()
+                    } else {
+                        await fetchFilterTasks(data).then(res => {
+                            this.tasks = res
+                            this.taskData = res.records
+                            console.log(res)
+                        })
+                    }
                 },
                 async toNextPage() {
                     this.currentPage++

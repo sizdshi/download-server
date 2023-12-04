@@ -4,6 +4,7 @@ package com.example.downloadserver.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.ErrorCode;
 import com.example.downloadserver.model.dto.DownloadRequest;
+import com.example.downloadserver.model.dto.FilterRequest;
 import com.example.downloadserver.model.dto.SubmitRequest;
 import com.example.downloadserver.model.dto.ThreadRequest;
 import com.example.downloadserver.model.entity.Download;
@@ -112,23 +113,18 @@ public class TransferController {
         return ResultUtils.success(downloadService.getDownloadVOPage(downloadPage, request));
     }
 
+//    @PostMapping("/filter")
+//    public BaseResponse<Object> filter(@RequestBody DownloadRequest downloadRequest) {
+//        if (!StringUtils.isNotEmpty(filterRequest.getStatus())) {
+//            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+//        }
+//        String result = downloadService.submit(filterRequest.getStatus()));
+//        return ResultUtils.success(result);
+//    }
 
-    private static class Task implements Runnable {
-        private String taskId;
 
-        public Task(String taskId) {
-            this.taskId = taskId;
-        }
 
-        @Override
-        public void run() {
-            System.out.println("Task " + taskId + " is running on thread " + Thread.currentThread().getId());
-        }
-    }
 
-    public void setPaused(boolean paused) {
-        isPaused = paused;
-    }
 
 
 }
