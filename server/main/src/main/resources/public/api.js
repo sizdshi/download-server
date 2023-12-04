@@ -401,122 +401,33 @@ async function deleteTask(ids) {
 }
 
 // 对任务的状态进行过滤选择,如果是all 的情况下，就返回所有的数据，默认是all 的情况
-async function fetchFilterTasks(filter) {
-    if (filter === 'all') {
-        return {
-            total: 6,
-            items: [
-                {
-                    id: '111',
-                    type: 'http',
-                    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-                    name: 'ubuntu.iso',
-                    status: 'downloading',
-                    size: '3GB',
-                    speed: '2.3MB',
-                    progress: '80',
-                    createdAt: '2023-11-11',
-                    finishedAt: '2023-11-12',
-                    timeLeft: '3m 10s',
-                    peers: 12,
-                    downloadSpeed: '140KB',
-                },
-                {
-                    id: '222',
-                    type: 'http',
-                    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-                    name: 'ubuntu-22.04.3-live-server-arm.iso',
-                    status: 'pending',
-                    size: '9MB',
-                    speed: '1.2MB',
-                    progress: '0',
-                    createdAt: '2023/11/10 00:00:00',
-                    finishedAt: '2023-11-15',
-                    peers: 12,
-                },
-                {
-                    id: '333',
-                    type: 'bt',
-                    name: 'ubuntu-22.04.3-live-server-arm.iso',
-                    status: 'downloading',
-                    size: '2.6GB',
-                    speed: '120KB',
-                    progress: '10',
-                    createdAt: '2023-11-11',
-                    finishedAt: '2023-11-12',
-                    timeLeft: '3m 2s',
-                    peers: 10,
-                    uploadSpeed: '198KB',
-                    downloadSpeed: '198KB',
-                },
-                {
-                    id: '444',
-                    type: 'http',
-                    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-                    name: 'ubuntu-22.04.3-live-server-arm.iso',
-                    status: 'downloaded',
-                    size: '9MB',
-                    speed: '1.2MB',
-                    progress: '100',
-                    createdAt: '2023/11/10 00:00:00',
-                    finishedAt: '2023-11-15',
-                    timeLeft: '1m 20s',
-                    peers: 12,
-                    downloadSpeed: '1.2MB',
-                },
-                {
-                    id: '555',
-                    type: 'bt',
-                    name: 'ubuntu-22.04.3-live-server-arm.iso',
-                    status: 'downloading',
-                    size: '2.6GB',
-                    speed: '120KB',
-                    progress: '10',
-                    createdAt: '2023-11-11',
-                    finishedAt: '2023-11-12',
-                    timeLeft: '3m 2s',
-                    peers: 10,
-                    uploadSpeed: '198KB',
-                    downloadSpeed: '198KB',
-                },
-                {
-                    id: '666',
-                    type: 'http',
-                    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-                    name: 'ubuntu-22.04.3-live-server-arm.iso',
-                    status: 'downloaded',
-                    size: '9MB',
-                    speed: '1.2MB',
-                    progress: '100',
-                    createdAt: '2023/11/10 00:00:00',
-                    finishedAt: '2023-11-15',
-                    timeLeft: '1m 20s',
-                    peers: 12,
-                    downloadSpeed: '1.2MB',
-                }
-            ]
-        }
-    } else {
-        return {
-            total: 1,
-            items: [
-                {
-                    id: '111',
-                    type: 'http',
-                    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-                    name: 'mock过滤后的数据',
-                    status: 'downloading',
-                    size: '3GB',
-                    speed: '2.3MB',
-                    progress: '80',
-                    createdAt: '2023-11-11',
-                    finishedAt: '2023-11-12',
-                    timeLeft: '3m 10s',
-                    peers: 12,
-                    downloadSpeed: '140KB',
-                }
-            ]
-        }
+async function fetchFilterTasks(params) {
+    console.log(params)
+    const requestData = {
+        current: params.currentPage,
+        file_name: "",
+        id: "",
+        pageSize: params.limit,
+        sortField: "",
+        sortOrder: "",
+        status: params.status,
+        url: ""
+    };
+
+    try {
+        const responseData = await axiosRequest("POST", "task/list/page/vo", requestData);
+        // 在这里对返回的数据进行适配，添加 total 属性等
+        console.log(responseData);
+        const adaptedData = {
+            total: responseData.data.total, // 使用后端返回的总数信息
+            records: responseData.data.records
+        };
+        console.log(adaptedData);
+        // 返回适配后的数据
+        return adaptedData;
+    } catch (error) {
+        console.error('Error in fetchTasks:', error);
+        throw error; // 抛出错误，以便调用方知道请求失败
     }
 }
 

@@ -13,11 +13,13 @@ public enum DownloadStatus {
 
     STATUS_WAITING("等待下载","STATUS_WAITING"),
 
-    STATUS_DOWNLOADING("正在下载","STATUS_DOWNLOADING"),
+    STATUS_DOWNLOADING("正在下载","downloaded"),
 
-    STATUS_PAUSED("停止下载","STATUS_PAUSED"),
+    STATUS_PAUSED("停止下载","pending"),
 
-    STATUS_DOWNLOADED("下载完成","STATUS_DOWNLOADED");
+    STATUS_DELETE("已删除","canceled"),
+
+    STATUS_DOWNLOADED("下载完成","downloading");
 
     private final String text;
 

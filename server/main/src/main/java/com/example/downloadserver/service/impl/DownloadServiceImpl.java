@@ -175,9 +175,11 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求数据不存在");
         }
 
-        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_PAUSED.getValue());
+        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_DELETE.getValue());
+        System.out.println(DownloadStatus.STATUS_DELETE.getValue());
         invokeLambdaUpdateWrapper.set(Download::getIs_delete,1);
-        int deleteCount = downloadMapper.delete(invokeLambdaUpdateWrapper);
+        int deleteCount = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
+        System.out.println("删除成功");
         if(deleteCount<=0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 删除任务数失败 数据库异常");
         }
@@ -222,6 +224,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         }
         return Long.toString(download.getId());
     }
+
+
 
     @Override
     public Page<DownloadVO> getDownloadVOPage(Page<Download> downloadPage, HttpServletRequest request) {
@@ -268,6 +272,9 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(status),"status",status);
         downloadQueryWrapper.ne(ObjectUtils.isNotEmpty(id),"id",id);
         downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(fileName),"file_name",fileName);
+        if(status.equals(DownloadStatus.STATUS_DELETE.getValue())){
+            downloadQueryWrapper.eq("is_delete",1);
+        }
 //        downloadQueryWrapper.eq("is_delete",false);
         downloadQueryWrapper.orderBy(SqlUtils.validSortField(sortField),sortOrder.equals(CommonConstant.SORT_ORDER_ASC)
                         ,sortField);
