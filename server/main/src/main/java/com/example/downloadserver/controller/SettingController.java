@@ -24,7 +24,7 @@ public class SettingController {
     SettingDO setting = new SettingDO();
 
 
-    @GetMapping("/get")
+    @GetMapping()
     public ResponseEntity<Map<String, Object>> getSetting(Model model) {
 
         setting = settingMapper.get();
@@ -33,28 +33,11 @@ public class SettingController {
 
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
-//    @PostMapping("/post")
-//    public ResponseEntity<Map<String, Object>> patchSetting(@RequestParam("downloadPath") String storePath,
-//                                                            @RequestParam("maxTasks") int maxTasks,
-//                                                            @RequestParam("maxDownloadSpeed") int maxDownloadSpeed,
-//                                                            @RequestParam("maxUploadSpeed") int maxUploadSpeed) {
-//        setting.setStorePath(storePath);
-//        setting.setMaxTasks(maxTasks);
-//        setting.setMaxDownloadSpeed(maxDownloadSpeed);
-//        setting.setMaxUploadSpeed(maxUploadSpeed);
-//        settingMapper.update(setting);
-//
-//        Map<String, Object> responseData = new HashMap<>();
-//        responseData.put("setting", setting);
-//
-//        return new ResponseEntity<>(responseData, HttpStatus.OK);
-//    }
 
-
-    @RequestMapping("/post")
+    @RequestMapping()
     @ResponseBody
-    public ResponseEntity aa(@RequestBody SettingDO v){
-        int i = settingMapper.update(v);
+    public ResponseEntity updateSetting(@RequestBody SettingDO setting){
+        int i = settingMapper.update(setting);
         return new ResponseEntity<>(i, HttpStatus.OK);
 
     }
