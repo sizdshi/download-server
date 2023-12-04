@@ -531,3 +531,17 @@ async function changeThreads(id, count) {
         console.log(data)
     })
 }
+
+async function validateURL(url) {
+    // 定义 URL 模式的正则表达式
+    const urlPattern = /^(http|https):\/\/(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?(\/\S*)?$/;
+
+    // 使用正则表达式进行匹配
+    if (!urlPattern.test(url)) {
+        // 弹窗显示错误信息
+        alert("不合法的URL");
+        return false;
+    }
+
+    return true;
+}

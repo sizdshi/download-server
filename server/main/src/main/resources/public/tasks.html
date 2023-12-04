@@ -40,12 +40,10 @@
                     })
                 },
                 async submitData(path) {
-
+                    await validateURL(path)
                     const res = await submitDownloadPath(path)
                     await resumeTask(res)
                     await this.fetchData()
-
-
                 },
                 async refresh(ids) {
                     let result = [];
