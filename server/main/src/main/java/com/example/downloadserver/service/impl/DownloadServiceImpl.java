@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.ErrorCode;
 import com.example.downloadserver.constant.CommonConstant;
 import com.example.downloadserver.model.dto.DownloadRequest;
+import com.example.downloadserver.model.dto.ThreadRequest;
 import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.vo.DownloadVO;
 import com.example.downloadserver.utils.SqlUtils;
@@ -42,118 +43,149 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     private DownloadMapper downloadMapper;
 
     @Override
-    public long changeThread(String id, long num, HttpServletRequest request) {
-        if(!StringUtils.isNotEmpty(id)||!StringUtils.isNotEmpty(String.valueOf(num))){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+    public long suspend(List<String> ids) {
+        if(!CollectionUtils.isNotEmpty(ids)){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
         }
-
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        invokeLambdaUpdateWrapper.eq(Download::getId,id);
+        invokeLambdaUpdateWrapper.in(Download::getId,ids);
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
 
         if(count<=0){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求数据不存在");
         }
-        Download download = new Download();
-        download.setCount(num);
 
-        boolean saveResult = this.save(download);
-        if(!saveResult){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 更新任务数失败 数据库异常");
-        }
-        return download.getId();
-    }
+        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_PAUSED.getValue());
+        int updateCount = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
+        List<Download> up = downloadMapper.selectList(invokeLambdaUpdateWrapper);
 
-    @Override
-    public long start(String id,HttpServletRequest request) {
-        if(!StringUtils.isNotEmpty(id)){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        invokeLambdaUpdateWrapper.eq(Download::getId,id);
-        long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
-
-        if(count<=0){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
-        }
-        Download download = new Download();
-        download.setStatus(DownloadStatus.STATUS_DOWNLOADING.getValue());
-
-        boolean saveResult = this.save(download);
-        if(!saveResult){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 开始任务数失败 数据库异常");
-        }
-        return download.getId();
-    }
-
-    @Override
-    public long suspend(String id, HttpServletRequest request) {
-        if(!StringUtils.isNotEmpty(id)){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        invokeLambdaUpdateWrapper.eq(Download::getId,id);
-        long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
-
-        if(count<=0){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
-        }
-        Download download = new Download();
-        download.setStatus(DownloadStatus.STATUS_WAITING.getValue());
-
-        boolean saveResult = this.save(download);
-        if(!saveResult){
+        if(updateCount<=0){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 暂停任务数失败 数据库异常");
         }
-        return download.getId();
+
+
+        return up.get(1).getId();
     }
 
     @Override
-    public long stop(String id, HttpServletRequest request) {
-        if(!StringUtils.isNotEmpty(id)){
+    public long changeThread(ThreadRequest threadRequest, HttpServletRequest request) {
+        if (!StringUtils.isNotEmpty(threadRequest.getId()) || !StringUtils.isNotEmpty(String.valueOf(threadRequest.getCount()))) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        invokeLambdaUpdateWrapper.eq(Download::getId,id);
+        invokeLambdaUpdateWrapper.eq(Download::getId,Long.parseLong(threadRequest.getId()));
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
 
         if(count<=0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
         }
-        Download download = new Download();
-        download.setStatus(DownloadStatus.STATUS_PAUSED.getValue());
 
-        boolean saveResult = this.save(download);
-        if(!saveResult){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 停止任务数失败 数据库异常");
+        invokeLambdaUpdateWrapper.set(Download::getCount,threadRequest.getCount());
+        int changeThread = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
+
+        if(changeThread<=0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"修改任务数失败 数据库异常");
         }
-        return download.getId();
+        return changeThread;
     }
 
     @Override
-    public long delete(String id) {
-        if(!StringUtils.isNotEmpty(id)){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+    public long start(List<String> ids,HttpServletRequest request) {
+        if(!CollectionUtils.isNotEmpty(ids)){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
         }
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        invokeLambdaUpdateWrapper.eq(Download::getId,id);
+        invokeLambdaUpdateWrapper.in(Download::getId,ids);
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
 
         if(count<=0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
         }
-        Download download = new Download();
-        download.setStatus(DownloadStatus.STATUS_PAUSED.getValue());
-        download.setIs_delete(1);
-        boolean saveResult = this.save(download);
-        if(!saveResult){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 删除任务失败 数据库异常");
+        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_DOWNLOADING.getValue());
+
+        int resumeCount = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
+        if(resumeCount<=0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 开始下载任务数失败 数据库异常");
         }
-        return download.getId();
+        return resumeCount;
+    }
+
+
+
+    @Override
+    public long suspend(List<String> ids, HttpServletRequest request) {
+        if(!CollectionUtils.isNotEmpty(ids)){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
+        }
+        LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        invokeLambdaUpdateWrapper.in(Download::getId,ids);
+        long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
+
+        if(count<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求数据不存在");
+        }
+
+        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_PAUSED.getValue());
+        int updateCount = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
+//        List<Download> up = downloadMapper.selectList(invokeLambdaUpdateWrapper);
+
+        if(updateCount<=0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 暂停任务数失败 数据库异常");
+        }
+
+        return updateCount;
     }
 
     @Override
-    public long submit(String url) {
+    public long restart(List<String> ids, HttpServletRequest request) {
+        if(!CollectionUtils.isNotEmpty(ids)){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
+        }
+
+        LambdaUpdateWrapper<Download> resumeWrapper = new LambdaUpdateWrapper<>();
+        resumeWrapper.in(Download::getId,ids);
+        long count = downloadMapper.selectCount(resumeWrapper);
+
+        if(count<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件不存在");
+        }
+        //todo 检查本地文件是否存在，存在则删除
+
+        resumeWrapper.set(Download::getStatus,DownloadStatus.STATUS_DOWNLOADING.getValue());
+
+        int resumeCount = downloadMapper.update(new Download(),resumeWrapper);
+        if(resumeCount<=0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 重新下载任务数失败 数据库异常");
+        }
+        return resumeCount;
+
+    }
+
+    @Override
+    public long delete(List<String> ids) {
+        if(!CollectionUtils.isNotEmpty(ids)){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
+        }
+        LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        invokeLambdaUpdateWrapper.in(Download::getId,ids);
+        long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
+
+        if(count<=0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求数据不存在");
+        }
+
+        invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_PAUSED.getValue());
+        invokeLambdaUpdateWrapper.set(Download::getIs_delete,1);
+        int deleteCount = downloadMapper.delete(invokeLambdaUpdateWrapper);
+        if(deleteCount<=0){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 删除任务数失败 数据库异常");
+        }
+        return deleteCount;
+    }
+
+    @Override
+    public String submit(String url) {
         if(!StringUtils.isNotEmpty(url)){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
@@ -163,26 +195,32 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "不合法的URL");
         }
 
-
+        //todo 检查是否逻辑删除，如果是，改为否
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         invokeLambdaUpdateWrapper.eq(Download::getUrl,url);
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
+
         if(count>0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件已存在");
         }
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+
 
         Download download = new Download();
-
         download.setUrl(url);
+        download.setTask_type("http");
+        download.setFile_name(fileName);
         download.setUpdate_time(new Date());
         download.setCreate_time(new Date());
+        //todo 文件大小在哪里处理
+
         boolean saveResult = this.save(download);
 
 
         if(!saveResult){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 提交任务失败 数据库异常");
         }
-        return download.getId();
+        return Long.toString(download.getId());
     }
 
     @Override

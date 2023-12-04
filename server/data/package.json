@@ -1,0 +1,17 @@
+
+  {
+    1id: '111',
+    1type: 'http',
+    url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
+    1name: 'ubuntu-22.04.3-live-server-arm.iso',
+    1threads: 2,
+    1status: 'downloading',
+    1size: '3GB',
+    speed: '2.3MB',
+    progress: '80',
+    1createdAt: '2023-11-11',
+    finishedAt: '2023-11-12',
+    timeLeft: '3m 10s',
+    peers: 12,
+    downloadSpeed: '140KB'
+  }

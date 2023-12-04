@@ -30,10 +30,16 @@
 		<hutool-all.version>5.8.16</hutool-all.version>
 		<knife4j-spring-boot-starter.version>3.0.3</knife4j-spring-boot-starter.version>
 		<mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
+
 	</properties>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-test</artifactId>
+			<version>2.7.17</version>
+			<scope>test</scope>
+		</dependency>
 
 
 		<dependency>
@@ -141,6 +147,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+
 
 
 	</dependencies>

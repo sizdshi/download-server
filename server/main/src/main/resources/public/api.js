@@ -27,7 +27,7 @@ async function fetchSettings() {
         }
         const data = await response.json();
 
-        console.log('asd',data)
+        console.log('asd', data)
         return {
             downloadPath: data.setting.storePath,
             maxTasks: data.setting.maxTasks,
@@ -308,6 +308,7 @@ async function fetchFilterFile(path, filter) {
                 createdAt: '2023-11-12'
             }]
 }
+
 // tasks 页面 api
 async function fetchTasks(params) {
     console.log(params)
@@ -324,132 +325,20 @@ async function fetchTasks(params) {
 
     try {
         const responseData = await axiosRequest("POST", "task/list/page/vo", requestData);
-
         // 在这里对返回的数据进行适配，添加 total 属性等
+        console.log(responseData);
         const adaptedData = {
-            total: responseData.data.size, // 使用后端返回的总数信息
+            total: responseData.data.total, // 使用后端返回的总数信息
             records: responseData.data.records
         };
-
+        console.log(adaptedData);
         // 返回适配后的数据
         return adaptedData;
     } catch (error) {
         console.error('Error in fetchTasks:', error);
         throw error; // 抛出错误，以便调用方知道请求失败
     }
-    // return axiosRequest("POST", "task/list/page/vo",requestData).then(data => {
-    //     console.log(data.records);
-    //     return data
-    // })
-    //     .catch(error => {
-    //         // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
-    //     });
-    // return {
-    //     total: 6,
-    //     records: [
-    //         {
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },
-    //         {
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },
-    //         {
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },{
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },{
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },{
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },{
-    //             id: '111',
-    //             type: 'http',
-    //             url: 'https://mirrors.tuna.tsinghua.edu.cn/aaa/ubuntu-live-server-arm.iso',
-    //             name: 'ubuntu.iso',
-    //             status: 'do',
-    //             size: '4GB',
-    //             speed: '111MB',
-    //             progress: '40',
-    //             createdAt: '2023-11-11',
-    //             finishedAt: '2023-11-12',
-    //             timeLeft: '3m 10s',
-    //             peers: 12,
-    //             downloadSpeed: '140KB',
-    //         },
-    //     ]
-    // }
+
 }
 
 
@@ -458,53 +347,54 @@ async function submitDownloadPath(path) {
     const requestData = {
         url: path
     };
-    return axiosRequest("POST", "task/submit",requestData).then(data => {
-        this.message = data.message; // 假设响应包含 'message' 属性
-        console.log(data.message);
+
+    const adaptedData ={
+        id:[]
+    };
+    await  axiosRequest("POST", "task/submit", requestData).then(data => {
+        adaptedData.id = [data.data];
+        console.log(data.data);
     })
         .catch(error => {
             // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
         });
+
+    console.log(adaptedData.id)
+
+    return adaptedData.id;
 }
 
 // 重新下载任务的详细信息，ids是一个数组，单个任务，就是一个元素的数组，多个任务就是多个元素的数组，实现同一个接口单量和多量的处理
 async function fetchTaskInfo(ids) {
-    console.log(ids)
-    // return {
-    //     id: 'refreshed_id',
-    //     type: 'http',
-    //     url: 'https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/22.04.3/ubuntu-22.04.3-live-server-arm.iso',
-    //     name: 'ubuntu-22.04.3-live-server-arm.iso',
-    //     status: 'downloading',
-    //     size: '3GB',
-    //     speed: '2.3MB',
-    //     progress: '80',
-    //     createdAt: '2023-11-11',
-    //     finishedAt: '2023-11-12',
-    //     timeLeft: '3m 10s',
-    //     peers: 12,
-    //     downloadSpeed: '140KB',
-    // }
+    console.log("重新下载：" + ids)
+    return axiosRequest("POST", "task/restart", ids).then(data => {
+        console.log(data)
+    })
 }
 
 // 暂停下载任务,ids是一个数组，单个任务，就是一个元素的数组，多个任务就是多个元素的数组，实现同一个接口单量和多量的处理
 async function pauseTask(ids) {
-    console.log(ids)
-    return true
+    console.log("暂停下载：" + ids)
+    return axiosRequest("POST", "task/suspend", ids).then(data => {
+        console.log(data)
+    })
 }
-
 
 
 // 恢复下载任务，ids是一个数组
 async function resumeTask(ids) {
-    console.log(ids)
-    return true
+    console.log("开始下载:" + ids)
+    return axiosRequest("POST", "task/start", ids).then(data => {
+        console.log(data)
+    })
 }
 
 // 删除下载任务，ids是一个数组
 async function deleteTask(ids) {
-    console.log(ids)
-    return true
+    console.log("删除任务:" + ids)
+    return axiosRequest("POST", "task/delete", ids).then(data => {
+        console.log(data)
+    })
 }
 
 // 对任务的状态进行过滤选择,如果是all 的情况下，就返回所有的数据，默认是all 的情况
@@ -625,4 +515,16 @@ async function fetchFilterTasks(filter) {
             ]
         }
     }
+}
+
+async function changeThreads(id, count) {
+    console.log("任务：" + id)
+    console.log("任务数：" + count)
+    const requestData={
+        id:id,
+        count:count
+    }
+    return axiosRequest("POST", "task/thread", requestData).then(data => {
+        console.log(data)
+    })
 }
