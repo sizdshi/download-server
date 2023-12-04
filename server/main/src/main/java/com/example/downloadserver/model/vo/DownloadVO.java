@@ -18,7 +18,7 @@ public class DownloadVO implements Serializable {
     /**
      * id
      */
-    private Long id;
+    private String id;
 
     /**
      * 文件名
@@ -81,6 +81,8 @@ public class DownloadVO implements Serializable {
         }
         Download download = new Download();
         BeanUtils.copyProperties(downloadVO,download);
+        long id = Long.parseLong(downloadVO.getId());
+        download.setId(id);
         return download;
     }
 
@@ -90,6 +92,8 @@ public class DownloadVO implements Serializable {
         }
         DownloadVO downloadVO = new DownloadVO();
         BeanUtils.copyProperties(download,downloadVO);
+        String id = Long.toString(download.getId());
+        downloadVO.setId(id);
         return  downloadVO;
     }
 }

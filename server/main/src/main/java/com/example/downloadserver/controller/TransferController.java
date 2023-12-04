@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.ErrorCode;
 import com.example.downloadserver.model.dto.DownloadRequest;
 import com.example.downloadserver.model.dto.SubmitRequest;
+import com.example.downloadserver.model.dto.ThreadRequest;
 import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.model.vo.DownloadVO;
 import com.example.exception.BusinessException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @Author: Kenneth shi
@@ -28,157 +30,93 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/task")
 public class TransferController {
 
-//    int corePoolSize = 5;
-//    int maximumPoolSize = 10;
-//    long keepAliveTime = 60L;
-//
-//    TimeUnit unit = TimeUnit.SECONDS;
+
     @Resource
     private DownloadService downloadService;
 
 
-    public  static boolean isPaused = false;
+    public static boolean isPaused = false;
 
     @PostMapping("/thread")
-    public BaseResponse<Object> changeThread(@RequestParam("id")String id, @RequestParam("num") long num, HttpServletRequest request){
+    public BaseResponse<Object> changeThread(@RequestBody ThreadRequest threadRequest, HttpServletRequest request) {
         //检查id是否规范
-        if(!StringUtils.isNotEmpty(id) || !StringUtils.isNotEmpty(String.valueOf(num))){
-            throw  new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        if (!StringUtils.isNotEmpty(threadRequest.getId()) || !StringUtils.isNotEmpty(String.valueOf(threadRequest.getCount()))) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
 
-        long result = downloadService.changeThread(id,num,request);
+        long result = downloadService.changeThread(threadRequest, request);
         return ResultUtils.success(result);
-        //todo 检查文件是否在数据库中存在
-
-
-        //todo 线程池里加减线程,待封装
-        //ExecutorService executor = Executors.newFixedThreadPool(5);
-//        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
-//        System.out.println("修改之前的线程数：");
-//        System.out.println("核心线程数：" + executor.getCorePoolSize());
-//        //异步执行
-//       Future<?> downloadResult = executor.submit(()->{
-//            //todo 下载服务
-//            Task task = new Task(id);
-//            task.run();
-//            System.out.println("这是"+id);
-//        });
-//        if(!downloadResult.isDone()){
-//            ThreadPoolExecutor threadPool = (ThreadPoolExecutor) executor;
-//            threadPool.setMaximumPoolSize(num);
-//            System.out.println("当前使用 " + num + " 个线程来加速下载...");
-//        }
-//
-//        executor.shutdown();
-////        BlockingDeque<Runnable> workQueue = new LinkedBlockingDeque<>();
-////        ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize,maximumPoolSize,keepAliveTime,unit,workQueue);
-////
-////        executor.execute(new Task(id));
-//////        int newMaximumPoolSize = num;
-////        executor.setMaximumPoolSize(num);
-//
-//        String result = "success";
-//
-//        return ResultUtils.success(result);
     }
 
 
     @PostMapping("/start")
-    public BaseResponse<Object> start(@RequestParam("id")String id,HttpServletRequest request){
+    public BaseResponse<Object> start(@RequestBody List<String> ids, HttpServletRequest request) {
         //todo 检查参数
-        if(!StringUtils.isNotEmpty(id)){
+        if (ids == null || ids.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
 
-        long result = downloadService.start(id,request);
+        long result = downloadService.start(ids, request);
         return ResultUtils.success(result);
-
-//        //todo 检查是否有缓存数据，如果有，继续下载，如果没有，重新下载
-//        // 在循环中判断是否需要继续上传
-//        if (Thread.currentThread().isInterrupted()) {
-//            System.out.println("Upload paused.");
-//            // 执行暂停上传时的逻辑
-//
-//        } else {
-//            System.out.println("Resuming upload.");
-//            // 执行继续上传时的逻辑
-//        }
-//
-//         if(!isPaused){
-//             //开始下载，查找状态？
-//             System.out.println("开始下载");
-//         }
-//
-////        while(true){
-////            if (isPaused){
-////                //跳过发送数据xxx
-////                continue;
-////            }
-////        }
-//
-//        //
-//        String result = "success";
-//
-//        return ResultUtils.success(result);
     }
 
-    @PostMapping("/stop")
-    public BaseResponse<Object> stop(@RequestParam("id")String id,HttpServletRequest request){
-
-        //todo 检查参数
-        //todo 下载的线程停止 ？ 全局的停止
-        if(!StringUtils.isNotEmpty(id)){
+    @PostMapping("/restart")
+    public BaseResponse<Object> restart(@RequestBody List<String> ids, HttpServletRequest request) {
+        if (ids == null || ids.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
 
-        long result = downloadService.stop(id,request);
+        long result = downloadService.restart(ids, request);
         return ResultUtils.success(result);
     }
+
     @PostMapping("/delete")
-    public BaseResponse<Object> delete(@RequestParam("id")String id){
-        if(!StringUtils.isNotEmpty(id)){
+    public BaseResponse<Object> delete(@RequestBody List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-
-        long result = downloadService.delete(id);
+        System.out.println("开始执行");
+        long result = downloadService.delete(ids);
         return ResultUtils.success(result);
     }
+
     @PostMapping("/suspend")
-    public BaseResponse<Object> suspend(@RequestParam("id")String id,HttpServletRequest request){
-        if(!StringUtils.isNotEmpty(id)){
+    public BaseResponse<Object> suspend(@RequestBody List<String> ids, HttpServletRequest request) {
+        if (ids == null || ids.isEmpty()) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-
-        long result = downloadService.suspend(id,request);
+        System.out.println("开始执行");
+        long result = downloadService.suspend(ids, request);
         return ResultUtils.success(result);
+
     }
 
     @PostMapping("/submit")
-    public BaseResponse<Object> submit(@RequestBody SubmitRequest submitRequest){
-        if(!StringUtils.isNotEmpty(submitRequest.getUrl())){
+    public BaseResponse<Object> submit(@RequestBody SubmitRequest submitRequest) {
+        if (!StringUtils.isNotEmpty(submitRequest.getUrl())) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        long result = downloadService.submit(submitRequest.getUrl());
+        String result = downloadService.submit(submitRequest.getUrl());
         return ResultUtils.success(result);
     }
 
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<DownloadVO>> listPostVOByPage(@RequestBody DownloadRequest downloadRequest,
-                                                           HttpServletRequest request){
+                                                           HttpServletRequest request) {
         long current = downloadRequest.getCurrent();
         long size = downloadRequest.getPageSize();
 
-        Page<Download> downloadPage = downloadService.page(new Page<>(current,size),
+        Page<Download> downloadPage = downloadService.page(new Page<>(current, size),
                 downloadService.getQueryWrapper(downloadRequest));
 
-        return ResultUtils.success(downloadService.getDownloadVOPage(downloadPage,request));
+        return ResultUtils.success(downloadService.getDownloadVOPage(downloadPage, request));
     }
 
 
-    private static class Task implements Runnable{
+    private static class Task implements Runnable {
         private String taskId;
 
-        public Task(String  taskId){
+        public Task(String taskId) {
             this.taskId = taskId;
         }
 
@@ -188,7 +126,7 @@ public class TransferController {
         }
     }
 
-    public void setPaused(boolean paused){
+    public void setPaused(boolean paused) {
         isPaused = paused;
     }
 
