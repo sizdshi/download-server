@@ -32,4 +32,8 @@
         md5,total_time,create_time,
         update_time,is_delete
     </sql>
+    
+    <select id="queryByIds" resultMap="BaseResultMap">
+        select * from downloader_db.download ${ew.customSqlSegment}
+    </select>
 </mapper>

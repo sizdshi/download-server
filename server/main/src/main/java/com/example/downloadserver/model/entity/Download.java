@@ -102,7 +102,7 @@ public class Download implements Serializable {
     /**
      * 是否删除
      */
-    @TableLogic
+
     private Integer is_delete;
 
     @TableField(exist = false)
