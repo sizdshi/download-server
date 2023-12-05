@@ -1,8 +1,13 @@
 package com.example.downloadserver.mapper;
 
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.example.downloadserver.model.entity.Download;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 /**
 * @author sizd-shi
@@ -12,6 +17,8 @@ import com.example.downloadserver.model.entity.Download;
 */
 public interface DownloadMapper extends BaseMapper<Download> {
 
+
+    int queryByIds(@Param("ew") LambdaUpdateWrapper<Download> wrapper);
 }
 
 

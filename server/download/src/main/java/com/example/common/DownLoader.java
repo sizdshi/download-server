@@ -21,4 +21,6 @@ public abstract class DownLoader implements Runnable {
         this.urlPath = urlPath;
         this.savePath = savePath;
     }
+
+
 }
