@@ -2,7 +2,9 @@
  * @returns {Array} 返回所有的设置项
  */
 async function axiosRequest(method, urlSuffix, data) {
-    const baseUrl = "http://localhost:8011";
+    console.log(1111)
+    // const baseUrl = "http://localhost:8011";
+    const baseUrl = 'http://tctech.asia:8011'
     const fullUrl = `${baseUrl}/${urlSuffix}`;
 
     return axios({
@@ -322,7 +324,7 @@ async function fetchTasks(params) {
         pageSize: params.limit,
         sortField: "",
         sortOrder: "",
-        status: "",
+        status: params.status,
         url: ""
     };
 
