@@ -54,8 +54,8 @@ public class MultipleThreadDownloadManager extends DownLoader {
     private ThreadPoolExecutor executor;
 
 
-//    @Resource
-//    private HttpDownload httpDownload;
+    @Resource
+    private HttpDownload httpDownload;
 
     @Resource
     private DownloadService downloadService;
