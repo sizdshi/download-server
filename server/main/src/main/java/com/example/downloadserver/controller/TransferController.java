@@ -107,10 +107,10 @@ public class TransferController {
         long current = downloadRequest.getCurrent();
         long size = downloadRequest.getPageSize();
 
-        Page<Download> downloadPage = downloadService.page(new Page<>(current, size),
-                downloadService.getQueryWrapper(downloadRequest));
-
-        return ResultUtils.success(downloadService.getDownloadVOPage(downloadPage, request));
+//        Page<Download> downloadPage = downloadService.page(new Page<>(current, size),
+//                downloadService.getQueryWrapper(downloadRequest));
+        Page<DownloadVO> downloadVOPage = downloadService.listDownloadVOByPage(downloadRequest,request);
+        return ResultUtils.success(downloadVOPage);
     }
 
 //    @PostMapping("/filter")

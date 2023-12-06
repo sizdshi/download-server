@@ -120,6 +120,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         }
         LambdaUpdateWrapper<Download> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         invokeLambdaUpdateWrapper.in(Download::getId,ids);
+        invokeLambdaUpdateWrapper.eq(Download::getIs_delete,0);
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
 
         if(count<=0){
@@ -145,6 +146,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
 
         LambdaUpdateWrapper<Download> resumeWrapper = new LambdaUpdateWrapper<>();
         resumeWrapper.in(Download::getId,ids);
+        resumeWrapper.eq(Download::getIs_delete,0);
         long count = downloadMapper.selectCount(resumeWrapper);
 
         if(count<=0){
@@ -163,6 +165,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     }
 
     @Override
+
     public long delete(List<String> ids) {
         if(!CollectionUtils.isNotEmpty(ids)){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
@@ -176,7 +179,6 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         }
 
         invokeLambdaUpdateWrapper.set(Download::getStatus,DownloadStatus.STATUS_DELETE.getValue());
-        System.out.println(DownloadStatus.STATUS_DELETE.getValue());
         invokeLambdaUpdateWrapper.set(Download::getIs_delete,1);
         int deleteCount = downloadMapper.update(new Download(),invokeLambdaUpdateWrapper);
         System.out.println("删除成功");
@@ -214,6 +216,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         download.setFile_name(fileName);
         download.setUpdate_time(new Date());
         download.setCreate_time(new Date());
+        download.setIs_delete(0);
         //todo 文件大小在哪里处理
 
         boolean saveResult = this.save(download);
@@ -224,7 +227,15 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         }
         return Long.toString(download.getId());
     }
+    @Override
+    public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {
+        long current = downloadRequest.getCurrent();
+        long size = downloadRequest.getPageSize();
 
+        Page<Download> downloadPage = this.page(new Page<>(current,size),this.getQueryWrapper(downloadRequest));
+
+        return this.getDownloadVOPage(downloadPage,request);
+    }
 
 
     @Override
@@ -241,15 +252,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         return downloadVOPage;
     }
 
-    @Override
-    public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {
-        long current = downloadRequest.getCurrent();
-        long size = downloadRequest.getPageSize();
 
-        Page<Download> downloadPage = this.page(new Page<>(current,size),this.getQueryWrapper(downloadRequest));
-
-        return this.getDownloadVOPage(downloadPage,request);
-    }
 
     @Override
     public QueryWrapper<Download> getQueryWrapper(DownloadRequest downloadRequest){
@@ -258,7 +261,6 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         if(downloadRequest == null){
             return downloadQueryWrapper;
         }
-
 
         String url = downloadRequest.getUrl();
         String status = downloadRequest.getStatus();
@@ -274,6 +276,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         downloadQueryWrapper.eq(ObjectUtils.isNotEmpty(fileName),"file_name",fileName);
         if(status.equals(DownloadStatus.STATUS_DELETE.getValue())){
             downloadQueryWrapper.eq("is_delete",1);
+        }else{
+            downloadQueryWrapper.eq("is_delete",0);
         }
 //        downloadQueryWrapper.eq("is_delete",false);
         downloadQueryWrapper.orderBy(SqlUtils.validSortField(sortField),sortOrder.equals(CommonConstant.SORT_ORDER_ASC)
