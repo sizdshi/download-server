@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -72,13 +70,23 @@ public class HttpDownloadImpl implements HttpDownload {
             int responseCode =  connection.getResponseCode();
             if(responseCode == HttpURLConnection.HTTP_PARTIAL){
                 //自动关闭输入输出流
-                try(InputStream inputStream = connection.getInputStream()){
+                try(InputStream inputStream = new BufferedInputStream(connection.getInputStream())){
                     int bufferSize = (int) (end-start+1);
                     byte[] buffer = new byte[bufferSize];
+                    //判断是否读取到文件尾
+                    int bytesRead;
+                    //记录读取位置
+                    int totalBytesRead = 0;
                     //读取字符流到指定数组中
-                    inputStream.read(buffer);
+                    // inputstream.read()详细看文档
+
+                    while (totalBytesRead < bufferSize && (bytesRead = inputStream.read(buffer, totalBytesRead, bufferSize - totalBytesRead)) != -1) {
+                        totalBytesRead += bytesRead;
+                    }
+
                     return buffer;
                 }
+
             }else {
                 throw new IOException("Unexpected response code: " + responseCode);
             }
