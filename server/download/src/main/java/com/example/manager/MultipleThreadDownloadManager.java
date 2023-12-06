@@ -8,6 +8,7 @@ import com.example.downloadserver.mapper.DownloadMapper;
 import com.example.downloadserver.model.entity.Download;
 import com.example.downloadserver.service.DownloadService;
 import com.example.exception.BusinessException;
+import com.example.service.HttpDownload;
 import com.example.service.SpeedListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -53,6 +54,8 @@ public class MultipleThreadDownloadManager extends DownLoader {
     private ThreadPoolExecutor executor;
 
 
+    @Resource
+    private HttpDownload httpDownload;
 
     @Resource
     private DownloadService downloadService;
@@ -80,7 +83,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
     public void run() {
         try {
 
-            long totalFileSize = getTotalFileSize(getUrlPath());
+            long totalFileSize = httpDownload.getFileSize();
             MultipleThreadDownloadManager.len = totalFileSize;
             long chunkSize = calculateChunkSize(totalFileSize);
 

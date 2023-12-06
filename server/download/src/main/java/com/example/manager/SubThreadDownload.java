@@ -1,7 +1,9 @@
 package com.example.manager;
 
 import com.example.common.DownLoader;
+import com.example.service.HttpDownload;
 
+import javax.annotation.Resource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,9 +21,14 @@ public class SubThreadDownload extends DownLoader {
 
     private long chunkIndex;
 
+//    @Resource
+//    private HttpDownload httpDownload;
+
     public SubThreadDownload(String urlPath, String savePath) {
         super(urlPath, savePath);
     }
+
+
 
     public void setter(int threadId, long startIndex, long endIndex) {
         this.threadId = threadId;
