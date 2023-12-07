@@ -34,7 +34,6 @@
                     this.tasks = {}
                     let data = {
                         id: id,
-                        url: this.downloadPath,
                         pos: this.pos,
                         currentPage: this.currentPage,
                         limit: this.limit,
@@ -43,7 +42,6 @@
                     await fetchTasks(data).then(res => {
                         this.tasks = res
                         this.taskData = res.records
-                        this.downloadPath = res.url
                         if (!this.taskData) {
                             alert('暂无数据')
                         }
@@ -82,7 +80,7 @@
                         await pauseTask(result)
                         this.checkValue = []
                         this.showPause = true
-                        await this.fetchData();
+                        // await this.fetchData();
                     }
                 },
                 async resumeTaskDownload(ids) {
@@ -215,10 +213,10 @@
                     class="flex-grow rounded">
                 <button class="bg-blue-600 px-6 py-1.5 text-white rounded-full"
                     @click="submitData(downloadPath)">Submit</button>
-                <div class="flex items-center space-x-1">
+                <!-- <div class="flex items-center space-x-1">
                     <img src="./public/bt.png" alt="" class="w-6 rounded-full">
                     <p> Upload.torrent file</p>
-                </div>
+                </div> -->
             </div>
 
             <div class="flex items-center justify-between mt-10">
@@ -279,10 +277,10 @@
             <template x-for="task in taskData" :key="task.id">
                 <div class="flex items-center space-x-6">
                     <input type="checkbox" class="rounded" :value="task.id" x-model="checkValue">
-                    <div class="bg-gray-100 shadow-md rounded-md flex w-full items-center p-3 space-x-4 group">
-                        <template x-if="task.task_type==='bt'">
+                    <div class="bg-gray-100 shadow-md rounded-md flex w-full items-center p-3 py-5 space-x-4 group">
+                        <!-- <template x-if="task.task_type==='bt'">
                             <img src="./public/bt.png" alt="" class="w-7 h-7 rounded-full">
-                        </template>
+                        </template> -->
                         <template x-if="task.task_type==='http'">
                             <p class="font-semibold text-lg text-green-600">HTTP</p>
                         </template>
