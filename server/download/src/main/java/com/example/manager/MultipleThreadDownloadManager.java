@@ -338,9 +338,10 @@ public class MultipleThreadDownloadManager extends DownLoader {
 //        List<Runnable> runnableList =
     }
 
-    private void checkPauseRequest() {
+//    private void checkPauseRequest() {
+//
+//    }
 
-    }
 
 
-}
+

@@ -79,7 +79,6 @@ public class HttpDownloadImpl implements HttpDownload {
                     int totalBytesRead = 0;
                     //读取字符流到指定数组中
                     // inputstream.read()详细看文档
-
                     while (totalBytesRead < bufferSize && (bytesRead = inputStream.read(buffer, totalBytesRead, bufferSize - totalBytesRead)) != -1) {
                         totalBytesRead += bytesRead;
                     }
