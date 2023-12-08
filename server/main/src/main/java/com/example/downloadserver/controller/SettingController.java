@@ -17,12 +17,10 @@ import java.util.Map;
 @RequestMapping("/settings")
 public class SettingController {
 
-
     @Resource
     SettingMapper settingMapper;
 
     SettingDO setting = new SettingDO();
-
 
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getSetting(Model model) {
@@ -30,10 +28,8 @@ public class SettingController {
         setting = settingMapper.get();
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("setting", setting);
-
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
-
     @RequestMapping()
     @ResponseBody
     public ResponseEntity updateSetting(@RequestBody SettingDO setting){
