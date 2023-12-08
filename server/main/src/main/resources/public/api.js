@@ -2,7 +2,9 @@
  * @returns {Array} 返回所有的设置项
  */
 async function axiosRequest(method, urlSuffix, data) {
-    const baseUrl = "http://localhost:8011";
+    //const baseUrl = "http://localhost:8011";
+    const baseUrl = "";
+
     const fullUrl = `${baseUrl}/${urlSuffix}`;
 
     return axios({
