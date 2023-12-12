@@ -22,11 +22,8 @@ async function axiosRequest(method, urlSuffix, data) {
 
 // 设置页面 api,下面是需要返回给我的数据格式
 async function fetchSettings() {
-
     try {
-
         const data = await axiosRequest('GET', 'settings');
-
         console.log('asd', data)
         return {
             downloadPath: data.setting.storePath,
@@ -58,7 +55,7 @@ async function saveSettings(settings) {
             maxUploadSpeed: settings.maxUploadSpeed
         };
 
-        await axiosRequest("POST", "settings", data)
+        await axiosRequest("POST", "settings",data)
         alert('save successfully')
 
         return true
@@ -76,7 +73,6 @@ async function saveSettings(settings) {
 
 async function fetchFileList(path, filter) {
     console.log(path, filter)
-
 }
 
 //  TODO: 查找符合path的文件，然后根据filter进行过滤
