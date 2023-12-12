@@ -18,17 +18,19 @@ public class SubThreadDownload extends DownLoader {
     private int threadId;
     private long startIndex;
     private long endIndex;
-
     private long chunkIndex;
 
-//    @Resource
-//    private HttpDownload httpDownload;
+    private  volatile boolean paused = false;
+
 
     public SubThreadDownload(String urlPath, String savePath) {
         super(urlPath, savePath);
     }
 
 
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
 
     public void setter(int threadId, long startIndex, long endIndex) {
         this.threadId = threadId;
