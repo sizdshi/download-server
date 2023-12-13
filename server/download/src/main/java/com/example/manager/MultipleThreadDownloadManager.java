@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @Author: Kenneth shi
  * @Description:
  **/
-@Component
+
 public class MultipleThreadDownloadManager extends DownLoader {
     /**
      * 线程下载数量

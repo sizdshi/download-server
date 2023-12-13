@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -59,6 +60,7 @@ public class HttpDownloadImpl implements HttpDownload {
 
 
     @Override
+
     public byte[] readChunk(long start, long end) {
         try {
             URL fileUrl = new URL(url);
