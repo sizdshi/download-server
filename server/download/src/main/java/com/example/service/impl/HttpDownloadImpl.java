@@ -23,16 +23,22 @@ public class HttpDownloadImpl implements HttpDownload {
 
     private String url;
 
-    public HttpDownloadImpl(){
+
+    public HttpDownloadImpl() {
+        this(null);
 
     }
 
     public HttpDownloadImpl(String url){
+        this.setUrl(url);
         this.url = url;
     }
 
-    //建立普通get请求，获取文件大小
 
+    @Override
+    public void setUrl(String url){
+        this.url = url;
+    }
 
     @Override
     public long getFileSize() {

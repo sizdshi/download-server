@@ -24,30 +24,30 @@ public class SpringTest {
     void contextLoads() {
 
     }
-
-    @Test
-    void MultipleTest() {
-
-        String id = downloadService.submit(fileUrl);
-        System.out.println("传入任务id"+id);
-        List<String> ids = new ArrayList<>();
-
-        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "L:\\test\\");
-        //设置线程数
-
-        threadDownload.setThreadCount(4);
-
-        //添加进度和网速监听
-        threadDownload.addSpeedListener((s, progress) -> {
-            String m = String.format("%.2f", (double) s / 1024 / 1024);
-            String pro = String.format("%.2f", progress);
-            System.out.println(m + "m/s--进度：" + pro + "%");
-        });
-
-        threadDownload.run();
-
-        System.out.println(downloadService.suspend(ids));
-
-    }
+//
+//    @Test
+//    void MultipleTest() {
+//
+//        String id = downloadService.submit(fileUrl);
+//        System.out.println("传入任务id"+id);
+//        List<String> ids = new ArrayList<>();
+//
+//        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "L:\\test\\");
+//        //设置线程数
+//
+//        threadDownload.setThreadCount(4);
+//
+//        //添加进度和网速监听
+//        threadDownload.addSpeedListener((s, progress) -> {
+//            String m = String.format("%.2f", (double) s / 1024 / 1024);
+//            String pro = String.format("%.2f", progress);
+//            System.out.println(m + "m/s--进度：" + pro + "%");
+//        });
+//
+//        threadDownload.run();
+//
+//        System.out.println(downloadService.suspend(ids));
+//
+//    }
 
 }

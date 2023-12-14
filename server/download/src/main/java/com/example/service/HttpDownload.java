@@ -20,4 +20,5 @@ public interface HttpDownload {
      */
     byte[] readChunk(long start,long end);
 
+    void setUrl(String url);
 }

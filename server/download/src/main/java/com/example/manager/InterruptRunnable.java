@@ -46,7 +46,7 @@ public class InterruptRunnable implements Runnable {
         }
     }
 
-    @Scheduled(fixedDelay = 200)
+//    @Scheduled(fixedDelay = 200)
     private void pollDataBase() {
         String status = getDataBaseStatus();
         if (status == null || status.isEmpty()) {
@@ -75,7 +75,6 @@ public class InterruptRunnable implements Runnable {
             switch (databaseStatus) {
                 case "pending":
                     paused = true;
-
                     break;
                 case "downloaded":
                 case "canceled":

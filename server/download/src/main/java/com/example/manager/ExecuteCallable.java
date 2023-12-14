@@ -5,6 +5,7 @@ import com.example.service.HttpDownload;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -40,20 +41,36 @@ public class ExecuteCallable extends DownLoader {
 
     private long startIndex;
     private long endIndex;
-    private long chunkIndex;
+
+
+
 
     @Resource
     private HttpDownload httpDownload;
 
+    public ExecuteCallable( CountDownLatch endLatch,
+                           Exchanger<Integer> exchanger, int id,
+                           ConcurrentTaskExecutor concurrentTaskExecutor,long startIndex,long endIndex) {
+        super(null, null);
+        this.endLatch = endLatch;
+        this.exchanger = exchanger;
+        this.threadId = id;
+        this.concurrentTaskExecutor = concurrentTaskExecutor;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+    }
+
     public ExecuteCallable(CountDownLatch beginLatch, CountDownLatch endLatch,
                            Exchanger<Integer> exchanger, int id,
-                           ConcurrentTaskExecutor concurrentTaskExecutor) {
+                           ConcurrentTaskExecutor concurrentTaskExecutor,long startIndex,long endIndex) {
         super(null, null);
         this.beginLatch = beginLatch;
         this.endLatch = endLatch;
         this.exchanger = exchanger;
         this.threadId = id;
         this.concurrentTaskExecutor = concurrentTaskExecutor;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
     }
 
     public void setter(int threadId, long startIndex, long endIndex) {
@@ -62,8 +79,8 @@ public class ExecuteCallable extends DownLoader {
         this.endIndex = endIndex;
     }
 
-    public void setChunkIndex(long chunkIndex) {
-        this.chunkIndex = chunkIndex;
+    public void setChunkIndex(int threadId) {
+        this.threadId = threadId ;
     }
 
     @Override
@@ -71,20 +88,17 @@ public class ExecuteCallable extends DownLoader {
         //  等待所有线程到达
         beginLatch.await();
         //  如果已经取消，直接返回
-        if (concurrentTaskExecutor.isCanceled()) {
-            //  通知其他线程取消
-            endLatch.countDown();
-            //  交换数据
-            exchanger.exchange(0);
-            return String.format("Downloader :%s is given up", threadId);
-        }
+//        if (concurrentTaskExecutor.isCanceled()) {
+//            //  通知其他线程取消
+//            endLatch.countDown();
+//            //  交换数据
+//            exchanger.exchange(0);
+//            return String.format("Downloader :%s is given up", threadId);
+//        }
 
 
         RandomAccessFile file = null;
-
-
         String fileName = getUrlPath().substring(getUrlPath().lastIndexOf('/') + 1);
-
 
         //在目标路径创建文件
         //todo 处理文件不存在时的异常
@@ -104,7 +118,7 @@ public class ExecuteCallable extends DownLoader {
                     file.write(buff, 0, len);
                     ConcurrentTaskExecutor.progress += len;
                 }
-                writeCompletedChunkToScoreboard(chunkIndex);
+                writeCompletedChunkToScoreboard(threadId);
             }
         } catch (Exception e) {
             log.error("读写error" + e);
