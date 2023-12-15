@@ -1,31 +1,37 @@
-package com.example.controller;
+package com.example;
 
+import com.example.service.DownloadService;
 import com.example.manager.MultipleThreadDownloadManager;
-import com.example.service.HttpDownload;
-import com.example.service.impl.HttpDownloadImpl;
-import lombok.val;
-import org.springframework.web.bind.annotation.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: Kenneth shi
  * @Description:
  **/
-@RestController
-@RequestMapping("/files")
-public class HttpController {
-
-
+@SpringBootTest
+public class SpringTest {
     String fileUrl = "https://dldir1.qq.com/qqfile/qq/PCQQ9.7.19/QQ9.7.19.29259.exe";
     String savePath = "QQ9.7.19.29259.exe";
 
+    @Resource
+    private DownloadService downloadService;
+    @Test
+    void contextLoads() {
 
-
-    @GetMapping("/down")
-    public void fileDownload() {
-
-
+    }
+//
+//    @Test
+//    void MultipleTest() {
+//
+//        String id = downloadService.submit(fileUrl);
+//        System.out.println("传入任务id"+id);
+//        List<String> ids = new ArrayList<>();
+//
 //        MultipleThreadDownloadManager threadDownload = new MultipleThreadDownloadManager(fileUrl, "L:\\test\\");
 //        //设置线程数
 //
@@ -39,8 +45,9 @@ public class HttpController {
 //        });
 //
 //        threadDownload.run();
-
-    }
-
+//
+//        System.out.println(downloadService.suspend(ids));
+//
+//    }
 
 }

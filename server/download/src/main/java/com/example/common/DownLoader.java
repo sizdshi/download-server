@@ -3,12 +3,14 @@ package com.example.common;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.Callable;
+
 /**
  * @Author: Kenneth shi
  * @Description:
  **/
 @Data
-public abstract class DownLoader implements Runnable {
+public abstract class DownLoader implements Callable<String> {
     private String urlPath;
 
     private String savePath;
