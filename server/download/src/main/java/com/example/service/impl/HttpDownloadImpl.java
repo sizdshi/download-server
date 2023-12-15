@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
@@ -34,67 +32,77 @@ public class HttpDownloadImpl implements HttpDownload {
 
 
     @Override
-    public long getFileSize() {
-        try {
-            URL netUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) netUrl.openConnection();
+    public long getFileSize() throws IOException{
+        URL netUrl = new URL(url);
+        String host = netUrl.getHost();
+        int port = netUrl.getPort() != -1 ? netUrl.getPort() : 80;
+        String path = netUrl.getPath();
 
-            //发送一个普通的GET请求，只获取文件大小而不读取内容
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(100);
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "keep-alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port));
+            PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            long totalFileSize = connection.getContentLengthLong();
+            // 发送HTTP请求
+            pw.println("HEAD " + path + " HTTP/1.1");
+            pw.println("Host: " + host);
+            pw.println("Accept: */*");
+            pw.println("Connection: Close");
+            pw.println(""); // HTTP请求头和消息体之间需要一个空行
+            pw.flush();
 
-            connection.disconnect();
-            return totalFileSize;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            // 读取响应
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                if (responseLine.startsWith("Content-Length:")) {
+                    long contentLength = Long.parseLong(responseLine.substring(16).trim());
+                    return contentLength;
+                }
+            }
         }
+        throw new IOException("Content-Length not found");
     }
-
 
 
     @Override
-    public byte[] readChunk(long start, long end) {
-        try {
-            URL fileUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) fileUrl.openConnection();
-            connection.setConnectTimeout(100);
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Range", "bytes=" + start + "-" + end);
+    public byte[] readChunk(long start, long end) throws IOException {
+        URL netUrl = new URL(url);
+        String host = netUrl.getHost();
+        int port = netUrl.getPort() != -1 ? netUrl.getPort() : 80;
+        String path = netUrl.getPath();
 
-            int responseCode =  connection.getResponseCode();
-            if(responseCode == HttpURLConnection.HTTP_PARTIAL){
-                //自动关闭输入输出流
-                try(InputStream inputStream = new BufferedInputStream(connection.getInputStream())){
-                    int bufferSize = (int) (end-start+1);
-                    byte[] buffer = new byte[bufferSize];
-                    //判断是否读取到文件尾
-                    int bytesRead;
-                    //记录读取位置
-                    int totalBytesRead = 0;
-                    //读取字符流到指定数组中
-                    // inputstream.read()详细看文档
-                    while (totalBytesRead < bufferSize && (bytesRead = inputStream.read(buffer, totalBytesRead, bufferSize - totalBytesRead)) != -1) {
-                        totalBytesRead += bytesRead;
-                    }
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port));
+            PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            InputStream in = socket.getInputStream();
 
-                    return buffer;
+            // 发送HTTP请求
+            pw.println("GET " + path + " HTTP/1.1");
+            pw.println("Host: " + host);
+            pw.println("Range: bytes=" + start + "-" + end);
+            pw.println("Accept: */*");
+            pw.println("Connection: Close");
+            pw.println(""); // HTTP请求头和消息体之间需要一个空行
+            pw.flush();
+
+            // 跨过HTTP响应头
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                if (responseLine.isEmpty()) { // 当读到空行时，表明响应头部分结束
+                    break;
                 }
-
-            }else {
-                throw new IOException("Unexpected response code: " + responseCode);
             }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            // 读取指定的字节范围
+            int bufferSize = (int) (end - start + 1);
+            byte[] buffer = new byte[bufferSize];
+            DataInputStream dis = new DataInputStream(in);
+
+            dis.readFully(buffer);
+            return buffer;
         }
     }
-
     // 根据分片大小构造 Range 请求进行分片下载
 
 //    public void downloadInChunks(String fileUrl, String savePath, long totalFileSize, long chunkSize) {

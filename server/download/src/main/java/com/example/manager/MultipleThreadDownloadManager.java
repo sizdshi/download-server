@@ -29,12 +29,12 @@ import java.util.concurrent.*;
 @Component
 public class MultipleThreadDownloadManager extends DownLoader {
     /**
-     *线程下载数量
+     * 线程下载数量
      */
     public static int threadCount = 4;
 
     /**
-     *记录子线程数量
+     * 记录子线程数量
      */
     public static int runningThread = 1;
     /**
@@ -63,16 +63,16 @@ public class MultipleThreadDownloadManager extends DownLoader {
     private DownloadMapper downloadMapper;
 
     public MultipleThreadDownloadManager(@Value("") String urlPath, @Value("") String savePath) {
-        super(urlPath,savePath);
-        MultipleThreadDownloadManager.urlPath=urlPath;
-        executor = new ThreadPoolExecutor(threadCount,threadCount,0,TimeUnit.SECONDS,
-                new LinkedBlockingDeque<>(),new ThreadPoolExecutor.CallerRunsPolicy());
+        super(urlPath, savePath);
+        MultipleThreadDownloadManager.urlPath = urlPath;
+        executor = new ThreadPoolExecutor(threadCount, threadCount, 0, TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(), new ThreadPoolExecutor.CallerRunsPolicy());
         createScoreboardFile();
     }
 
     public void setThreadCount(int threadCount) {
         MultipleThreadDownloadManager.threadCount = threadCount;
-        if(executor != null) {
+        if (executor != null) {
             executor.setCorePoolSize(threadCount);
             executor.setMaximumPoolSize(threadCount);
         }
@@ -88,22 +88,22 @@ public class MultipleThreadDownloadManager extends DownLoader {
             long chunkSize = calculateChunkSize(totalFileSize);
 
             String fileName = getUrlPath().substring(getUrlPath().lastIndexOf('/') + 1);
-            RandomAccessFile file = new RandomAccessFile(getTempPath()+fileName, "rw");
+            RandomAccessFile file = new RandomAccessFile(getTempPath() + fileName, "rw");
             file.setLength(totalFileSize);
 
             //读取任务完成记分板文件
             Set<Long> completedChunks = loadCompletedChunks();
 
-            long totalTasks = (long) Math.ceil((double) totalFileSize /chunkSize);
+            long totalTasks = (long) Math.ceil((double) totalFileSize / chunkSize);
 
             for (int i = 0; i < totalTasks; i++) {
                 //下载的开始位置
                 long startIndex = i * chunkSize;
                 //结束位置
-                long endIndex = Math.min((i+1)*chunkSize-1, totalFileSize - 1);
+                long endIndex = Math.min((i + 1) * chunkSize - 1, totalFileSize - 1);
                 System.out.println("任务：" + i + "下载" + startIndex + "--->" + endIndex);
                 // 新增：如果分片已下载，则跳过
-                if (completedChunks.contains((long)i)) {
+                if (completedChunks.contains((long) i)) {
                     System.out.println("任务：" + i + "已下载，跳过");
                     continue;
                 }
@@ -117,7 +117,6 @@ public class MultipleThreadDownloadManager extends DownLoader {
 
             //开始监听下载进度
             speed(executor);
-
 
 
         } catch (Exception e) {
@@ -140,10 +139,10 @@ public class MultipleThreadDownloadManager extends DownLoader {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            double downloadedPercentage =(double) downloadedChunks / (double) totalTasks  * 100;
+            double downloadedPercentage = (double) downloadedChunks / (double) totalTasks * 100;
 
             //当前下载进度除以文件总长得到下载进度
-            double p = (double) temp / (double) len * (100-downloadedPercentage) +downloadedPercentage;
+            double p = (double) temp / (double) len * (100 - downloadedPercentage) + downloadedPercentage;
             //当前下载进度减去前一秒的下载进度就得到一秒内的下载速度
             temp = progress - temp;
 
@@ -151,7 +150,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
             // 判断是否所有分片下载完成
             boolean allChunksDownloaded = checkAllChunksDownloaded();
             if (allChunksDownloaded) {
-                downloadInProgress=false;
+                downloadInProgress = false;
                 speedListener.speed(progress, 100);
                 System.out.println("文件下载完毕");
             }
@@ -169,7 +168,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
     }
 
 
-    private long getTotalFileSize(String fileUrl){
+    private long getTotalFileSize(String fileUrl) {
         URL url = null;
         try {
             url = new URL(fileUrl);
@@ -192,7 +191,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
         }
     }
 
-    private long calculateChunkSize(long totalFileSize){
+    private long calculateChunkSize(long totalFileSize) {
         if (totalFileSize <= 32 * 1024) {
             return 32 * 1024;  // 最小32KB
         } else if (totalFileSize <= 10 * 1024 * 1024) {
@@ -205,7 +204,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
         }
     }
 
-    private Set<Long> loadCompletedChunks(){
+    private Set<Long> loadCompletedChunks() {
         Set<Long> completedChunks = new HashSet<>();
         try {
             File scoreboardFile = new File(getSavePath(), "scoreboard.txt");
@@ -225,9 +224,9 @@ public class MultipleThreadDownloadManager extends DownLoader {
         return completedChunks;
     }
 
-    private void createScoreboardFile(){
+    private void createScoreboardFile() {
         try {
-            File scoreboardFile = new File(getSavePath(),"scoreboard.txt");
+            File scoreboardFile = new File(getSavePath(), "scoreboard.txt");
             if (!scoreboardFile.exists()) {
                 scoreboardFile.createNewFile();
             }
@@ -239,7 +238,7 @@ public class MultipleThreadDownloadManager extends DownLoader {
 
 
     // 监控下载进度的方法
-    private  void monitorProgress() {
+    private void monitorProgress() {
         try {
             long totalTasks = (long) Math.ceil((double) len / calculateChunkSize(len));
             while (downloadInProgress) {
@@ -249,16 +248,16 @@ public class MultipleThreadDownloadManager extends DownLoader {
                 Thread.sleep(1000);
                 // 计算已下载的百分比
                 double downloadedPercentage = (double) downloadedChunks / (double) totalTasks * 100;
-                System.out.println("已下载进度"+downloadedPercentage);
+                System.out.println("已下载进度" + downloadedPercentage);
                 // 当前下载进度除以文件总长得到下载进度
-                double p = (double) temp / (double) len * (100-downloadedPercentage)+downloadedPercentage;
+                double p = (double) temp / (double) len * (100 - downloadedPercentage) + downloadedPercentage;
                 // 当前下载进度减去前一秒的下载进度就得到一秒内的下载速度
                 temp = progress - temp;
                 speedListener.speed(temp, p);
                 // 判断是否所有分片下载完成
                 boolean allChunksDownloaded = checkAllChunksDownloaded();
                 if (allChunksDownloaded) {
-                    downloadInProgress=false;
+                    downloadInProgress = false;
                     speedListener.speed(progress, 100);
                     System.out.println("文件下载完毕");
                 }
@@ -285,13 +284,13 @@ public class MultipleThreadDownloadManager extends DownLoader {
     }
 
     @Scheduled(fixedDelay = 200)
-    private void pollDataBase(){
+    private void pollDataBase() {
         String status = getDataBaseStatus();
-        if(status == null || status.isEmpty()){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"未获取到Download对象");
+        if (status == null || status.isEmpty()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "未获取到Download对象");
         }
         handleDataBaseStatus(status);
-        System.out.println("轮询数据库"+status);
+        System.out.println("轮询数据库" + status);
     }
 
     // 新增：从数据库中获取任务状态的示例方法（根据实际情况替换）
@@ -300,8 +299,8 @@ public class MultipleThreadDownloadManager extends DownLoader {
         LambdaQueryWrapper<Download> lambdaQueryWrapper = new LambdaQueryWrapper();
         lambdaQueryWrapper.eq(Download::getFile_url, urlPath);
         Download download = downloadService.getOne(lambdaQueryWrapper);
-        if(download == null){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"未获取到Download对象");
+        if (download == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "未获取到Download对象");
         }
         // 返回任务状态，例如 DownloadStatus.STATUS_PAUSED
         return download.getStatus();
@@ -342,6 +341,6 @@ public class MultipleThreadDownloadManager extends DownLoader {
 //
 //    }
 
-
+}
 
 

@@ -3,8 +3,8 @@
  */
 async function axiosRequest(method, urlSuffix, data) {
     console.log(1111)
-    // const baseUrl = "http://localhost:8011";
-    const baseUrl = 'http://tctech.asia:8011'
+    const baseUrl = "http://localhost:8011";
+    //const baseUrl = 'http://tctech.asia:8011';
     const fullUrl = `${baseUrl}/${urlSuffix}`;
 
     return axios({

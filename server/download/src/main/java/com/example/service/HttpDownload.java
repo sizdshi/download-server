@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.io.IOException;
+
 /**
  * @Author: Kenneth shi
  * @Description:
@@ -12,7 +14,7 @@ public interface HttpDownload {
      * 计算文件大小
      * @return
      */
-    long getFileSize();
+    long getFileSize() throws IOException;
 
 //    long calculateChunkSize(long totalFileSize);
 
@@ -22,7 +24,7 @@ public interface HttpDownload {
      * @param end
      * @return
      */
-    byte[] readChunk(long start,long end);
+    byte[] readChunk(long start,long end) throws IOException;
 
 //    void downloadInChunks(String fileUrl, String savePath, long totalFileSize, long chunkSize);
 //
