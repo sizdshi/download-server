@@ -66,7 +66,6 @@ public class HttpDownloadImpl implements HttpDownload {
 
 
     @Override
-
     public byte[] readChunk(long start, long end) {
         try {
             URL fileUrl = new URL(url);
@@ -74,9 +73,9 @@ public class HttpDownloadImpl implements HttpDownload {
             connection.setConnectTimeout(100);
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Range", "bytes=" + start + "-" + end);
-
             int responseCode =  connection.getResponseCode();
             if(responseCode == HttpURLConnection.HTTP_PARTIAL){
+
                 //自动关闭输入输出流
                 try(InputStream inputStream = new BufferedInputStream(connection.getInputStream())){
                     int bufferSize = (int) (end-start+1);

@@ -1,7 +1,10 @@
 package com.example.manager;
 
 import com.example.common.DownLoader;
+import com.example.service.HttpDownload;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -14,6 +17,7 @@ import java.util.concurrent.Exchanger;
  * @Description:
  **/
 @Slf4j
+@Service
 public class ExecuteCallable extends DownLoader {
     private int threadId;
     private CountDownLatch beginLatch;
@@ -24,6 +28,17 @@ public class ExecuteCallable extends DownLoader {
     private long startIndex;
     private long endIndex;
 
+    private static HttpDownload httpDownload;
+
+    @Autowired
+    public void setHttpDownload(HttpDownload httpDownload) {
+        ExecuteCallable.httpDownload = httpDownload;
+    }
+
+    public ExecuteCallable() {
+        super(null,null);
+        // 无参构造函数的内容
+    }
 
     public ExecuteCallable(CountDownLatch beginLatch, CountDownLatch endLatch,
                            Exchanger<Integer> exchanger, int id,
@@ -61,10 +76,16 @@ public class ExecuteCallable extends DownLoader {
         this.endIndex = endIndex;
     }
 
+    public ExecuteCallable(String urlPath, String savePath) {
+        super(urlPath, savePath);
+    }
+
     @Override
     public String call() throws Exception {
+        beginLatch.await();
         System.out.println("开始下载"+threadId);
-//        beginLatch.await();
+       long filetest = httpDownload.getFileSize();
+        System.out.println(filetest);
         if (concurrentTaskExecutor.isCanceled()) {
             endLatch.countDown();
             exchanger.exchange(0);
@@ -99,6 +120,7 @@ public class ExecuteCallable extends DownLoader {
                     }
                     // 下载完成后，写入任务记分板文件
                     writeCompletedChunkToScoreboard(threadId);
+
                 }
             }
         } catch (Exception e) {

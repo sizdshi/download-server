@@ -3,6 +3,9 @@ package com.example.manager;
 import com.example.service.HttpDownload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,38 +27,56 @@ import java.util.concurrent.*;
  **/
 @Slf4j
 @Component
+@Scope("prototype")
 public class ConcurrentTaskExecutor {
     private volatile boolean canceled = false;
     public volatile static int progress;
 
-    private String urlPath = "https://dldir1.qq.com/qqfile/qq/PCQQ9.7.19/QQ9.7.19.29259.exe";
+    private String urlPath ;
 
-    private String savePath = "L:\\test\\";
+    private String savePath ;
 
     private int threadCount = 6;
     public volatile static long len = 0;
 
+    private ThreadPoolTaskExecutor taskExecutor;
 
-    private static HttpDownload httpDownload;
+    private HttpDownload httpDownload;
 
     @Autowired
     public void setHttpDownload(HttpDownload httpDownload) {
-        ConcurrentTaskExecutor.httpDownload = httpDownload;
+        this.httpDownload = httpDownload;
     }
-
 
     public ConcurrentTaskExecutor() {
-        this(null, null, 0);
+        this(null, null, 5);
     }
 
-    public ConcurrentTaskExecutor(String urlPath, String savePath, int threadCount){
+    public ConcurrentTaskExecutor(String urlPath, String savePath,int threadCount) {
         this.urlPath = urlPath;
         this.savePath = savePath;
         this.threadCount = threadCount;
+        this.taskExecutor = createThreadPoolTaskExecutor();
     }
 
-    
+    private ThreadPoolTaskExecutor createThreadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(threadCount);
+        executor.setMaxPoolSize(threadCount);
+//        String fileName = urlPath.substring(urlPath.lastIndexOf('/') + 1);
+        executor.setThreadNamePrefix("_download--");
+        executor.initialize();
+        return executor;
+    }
 
+    public void setThreadCount(int newThreadCount) {
+        this.threadCount = newThreadCount;
+        // 如果你希望在运行时修改线程池的大小，可以在这里进行设置
+        taskExecutor.setCorePoolSize(newThreadCount);
+        taskExecutor.setMaxPoolSize(newThreadCount);
+    }
+    
+    @Async
     public void executeTask() throws Exception {
         int personCount = 10;
         httpDownload.setUrl(urlPath);
@@ -73,7 +94,7 @@ public class ConcurrentTaskExecutor {
         Set<Long> completedChunks = loadCompletedChunks();
 
         int totalTasks = (int) Math.ceil((double) totalFileSize / chunkSize);
-//        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch endLatch = new CountDownLatch(totalTasks);
         Exchanger<Integer> exchanger = new Exchanger<Integer>();
 
@@ -89,37 +110,39 @@ public class ConcurrentTaskExecutor {
                 continue;
             }
             actualThread++;
-//            futureTaskList.add(new FutureTask<String>(new ExecuteCallable(beginLatch, endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
-            futureTaskList.add(new FutureTask<String>(new ExecuteCallable( endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
+            futureTaskList.add(new FutureTask<String>(new ExecuteCallable(beginLatch, endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
+//            futureTaskList.add(new FutureTask<String>(new ExecuteCallable( endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
 
         }
 
 
         ExecutorService execService = Executors.newFixedThreadPool(threadCount);
         for (FutureTask<String> futureTask : futureTaskList) {
-            execService.execute(futureTask);
+            taskExecutor.execute(futureTask);
             System.out.println("提交任务"+futureTask.toString());
         }
 
+//        List<Future<String>> futures = taskExecutor.getThreadPoolExecutor().invokeAll(futureTaskList);
+
 //        new Thread(new InterruptRunnable(this, beginLatch)).start();
 
-//        beginLatch.countDown();
+        beginLatch.countDown();
 
-//        Integer totalResult = Integer.valueOf(0);
-//        for (int i = 0; i < actualThread; i++) {
-//            Integer partialResult = exchanger.exchange(Integer.valueOf(0));
-//            if(partialResult != 0){
-//                totalResult = totalResult + partialResult;
-//                System.out.println(String.format("Progress: %s/%s", totalResult, actualThread));
-//            }
-//        }
+        Integer totalResult = Integer.valueOf(0);
+        for (int i = 0; i < actualThread; i++) {
+            Integer partialResult = exchanger.exchange(Integer.valueOf(0));
+            if(partialResult != 0){
+                totalResult = totalResult + partialResult;
+                System.out.println(String.format("Progress: %s/%s", totalResult, actualThread));
+            }
+        }
 
         endLatch.await();
         System.out.println("--------------");
         for (FutureTask<String> futureTask : futureTaskList) {
             System.out.println(futureTask.get());
         }
-        execService.shutdown();
+      taskExecutor.shutdown();
     }
 
     public boolean isCanceled() {
@@ -130,28 +153,7 @@ public class ConcurrentTaskExecutor {
         this.canceled = canceled;
     }
 
-    private long getTotalFileSize(String fileUrl) {
-        URL url = null;
-        try {
-            url = new URL(fileUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            //发送一个普通的GET请求，只获取文件大小而不读取内容
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(100);
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "keep-alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
-
-            long totalFileSize = connection.getContentLengthLong();
-//        MultipleThreadDownloadManager.len=totalFileSize;
-            connection.disconnect();
-            return totalFileSize;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private Set<Long> loadCompletedChunks() {
         Set<Long> completedChunks = new HashSet<>();
@@ -189,11 +191,5 @@ public class ConcurrentTaskExecutor {
 
 
 
-//    public static void main(String[] args) throws Exception {
-//        ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor("https://dldir1.qq.com/qqfile/qq/PCQQ9.7.19/QQ9.7.19.29259.exe","/Users/hcshi/Downloads/test/",6);
-//        executor.executeTask();
-//
-////        ConcurrentTaskExecutor executor2 = new ConcurrentTaskExecutor("https://dldir1v6.qq.com/weixin/Windows/WeChatSetup.exe","L:\\test\\",6);
-////        executor2.executeTask();
-//    }
+
 }
