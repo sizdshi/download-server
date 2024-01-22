@@ -180,7 +180,7 @@ public class ConcurrentTaskExecutor  {
 
         ExecutorService execService = Executors.newFixedThreadPool(threadCount);
         for (FutureTask<String> futureTask : futureTaskList) {
-            taskExecutor.execute(futureTask);
+            taskExecutor.submit(futureTask);
             System.out.println("提交任务"+futureTask.toString());
         }
 
@@ -200,7 +200,7 @@ public class ConcurrentTaskExecutor  {
 //                System.out.println(String.format("Progress: %s/%s", totalResult, actualThread));
 //            }
 //        }
-//        speed();
+
         endLatch.await();
 
         System.out.println("--------------");
@@ -325,16 +325,16 @@ public class ConcurrentTaskExecutor  {
     }
 
 
-        @Scheduled(fixedRate = 200)
-        private void startDatabasePollingTask(){
-        log.info("轮训数据库");
-        boolean canceled = checkDatabaseStatus();
-        if(canceled){
-            setCanceled(true);
-            System.out.println("取消下载");
-        }
-
-    }
+//    @Scheduled(fixedRate = 200)
+//    private void startDatabasePollingTask() {
+//        log.info("轮训数据库");
+//        boolean canceled = checkDatabaseStatus();
+//        if (canceled) {
+//            setCanceled(true);
+//            System.out.println("取消下载");
+//        }
+//
+//    }
 
 
     private boolean checkDatabaseStatus(){

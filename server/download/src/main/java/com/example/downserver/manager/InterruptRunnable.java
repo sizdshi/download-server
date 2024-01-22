@@ -128,54 +128,5 @@ public class InterruptRunnable implements Runnable {
         }
     }
 
-//    @Scheduled(fixedRate = 200)
-//    private void startDatabasePollingTask(){
-//        log.info("轮训数据库");
-//
-//        LambdaQueryWrapper<Download> lambdaQueryWrapper = new LambdaQueryWrapper();
-//        lambdaQueryWrapper.eq(Download::getUrl, concurrentTaskExecutor.getUrlPath());
-//        lambdaQueryWrapper.eq(Download::getIs_delete,0);
-//        Download download = downloadService.getOne(lambdaQueryWrapper);
-//
-//        if (download == null) {
-//            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "未获取到Download对象");
-//        }
-//
-//        String taskStatus = download.getStatus();
-//        System.out.println("当前任务状态： "+taskStatus);
-////        boolean canceled = checkDatabaseStatus();
-////        if(canceled){
-////            concurrentTaskExecutor.setCanceled(true);
-////            System.out.println("取消下载");
-////        }
-//
-//    }
-
-    private boolean checkDatabaseStatus(){
-        // 检查数据库是否有取消下载的请求
-
-        LambdaQueryWrapper<Download> lambdaQueryWrapper = new LambdaQueryWrapper();
-        lambdaQueryWrapper.eq(Download::getUrl, concurrentTaskExecutor.getUrlPath());
-        lambdaQueryWrapper.eq(Download::getIs_delete,0);
-        Download download = downloadService.getOne(lambdaQueryWrapper);
-
-        if (download == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "未获取到Download对象");
-        }
-
-        String taskStatus = download.getStatus();
-        System.out.println("当前任务状态： "+taskStatus);
-        switch (taskStatus) {
-            case "deleted":
-            case "pending":
-                return true;
-            case "downloading":
-            case "completes":
-            default:
-                return false;
-        }
-
-    }
-
 
 }
