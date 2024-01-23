@@ -10,6 +10,11 @@ import java.io.Serializable;
  **/
 @Data
 public class SendRequest implements Serializable {
+    /**
+     * 下载地址的数据库id
+     */
+    private String id;
+
 
     /**
      * 存储地址
@@ -20,6 +25,11 @@ public class SendRequest implements Serializable {
      * 下载地址
      */
     private String url;
+
+    /**
+     * 任务数量
+     */
+    private int threadCount;
 
     private static final long serialVersionUID = 1L;
 }

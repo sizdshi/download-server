@@ -140,7 +140,7 @@ public class ExecuteCallable extends DownLoader {
         long millis = (long) (Math.random() * 10 * 1000);
         String result = String.format("线程 :%s 已完成下载, 耗时 %s millis", threadId, millis);
 
-        System.out.println(result);
+//        System.out.println(result);
 //        exchanger.exchange(1);
         endLatch.countDown();
 
