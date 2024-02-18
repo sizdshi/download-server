@@ -193,16 +193,21 @@ async function submitDownloadPath(path) {
         url: path
     };
 
+
+
     const adaptedData ={
         id:[]
     };
-    await  axiosRequest("POST", "task/submit", requestData).then(data => {
-        adaptedData.id = [data.data];
-        console.log(data.data);
-    })
-        .catch(error => {
-            // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
-        });
+
+    const responseData = await axiosRequest("POST","task/submit",requestData);
+    console.log("这是responseData: "+JSON.stringify(responseData));
+    // await  axiosRequest("POST", "task/submit", requestData).then(data => {
+    //     adaptedData.id = [data.data];
+    //     console.log(data.data);
+    // })
+    //     .catch(error => {
+    //         // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
+    //     });
 
     console.log(adaptedData.id)
 

@@ -21,7 +21,7 @@ public enum DownloadStatus {
 
     STATUS_DELETE("已删除","deleted"),
 
-    STATUS_DOWNLOADED("下载完成","completes");
+    STATUS_DOWNLOADED("下载完成","complete");
 
     private final String text;
 

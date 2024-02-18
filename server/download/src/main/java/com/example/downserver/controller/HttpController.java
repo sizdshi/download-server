@@ -18,12 +18,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/download")
 public class HttpController {
-
-
-    String fileUrl = "https://dldir1.qq.com/qqfile/qq/PCQQ9.7.19/QQ9.7.19.29259.exe";
-    String savePath = "QQ9.7.19.29259.exe";
-
-
+    
     @PostMapping("/start")
     public BaseResponse<Object> startDownload(@RequestBody SendRequest sendRequest) {
 
@@ -46,7 +41,6 @@ public class HttpController {
                 try {
                     executor.executeTask();
                 } catch (Exception e) {
-                    // Handle the exception as needed
                     e.printStackTrace();
                 }
             });

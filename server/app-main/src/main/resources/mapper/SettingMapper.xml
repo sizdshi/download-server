@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.SettingsMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.model.entity.Setting">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="store_path" column="store_path" jdbcType="VARCHAR"/>
+            <result property="max_tasks" column="max_tasks" jdbcType="INTEGER"/>
+            <result property="max_download_speed" column="max_download_speed" jdbcType="INTEGER"/>
+            <result property="max_upload_speed" column="max_upload_speed" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,store_path,max_tasks,
+        max_download_speed,max_upload_speed
+    </sql>
+
+    <select id="queryByInit" resultMap="BaseResultMap">
+        select * from downloader_db.setting where id = '1'
+    </select>
+</mapper>
