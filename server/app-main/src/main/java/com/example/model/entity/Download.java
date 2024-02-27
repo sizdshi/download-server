@@ -43,7 +43,7 @@ public class Download implements Serializable {
 
     /**
      * 文件状态(STATUS_NONE: 默认状态 STATUS_WAITING : 等待下载 STATUS_DOWNLOADING : 正在下载
-                                                                        STATUS_PAUSED : 停止下载 STATUS_DOWNLOADED : 下载完成)
+     STATUS_PAUSED : 停止下载 STATUS_DOWNLOADED : 下载完成)
      */
     private String status;
 

@@ -27,8 +27,7 @@ public class SettingsServiceImpl extends ServiceImpl<SettingsMapper, Setting>
     public String queryByInit() {
 
         Setting setting = settingsMapper.selectById(1);
-        System.out.println(setting.toString());
-        return null;
+        return setting.toString();
     }
 }
 

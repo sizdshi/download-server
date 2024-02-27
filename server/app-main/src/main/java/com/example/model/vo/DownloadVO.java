@@ -31,46 +31,15 @@ public class DownloadVO implements Serializable {
     private String url;
 
     /**
-     * 当前线程数
-     */
-    private Long count;
-
-    /**
      * 文件状态(STATUS_NONE: 默认状态 STATUS_WAITING : 等待下载 STATUS_DOWNLOADING : 正在下载
      STATUS_PAUSED : 停止下载 STATUS_DOWNLOADED : 下载完成)
      */
     private String status;
 
-
-
     /**
-     * http or bt
+     * 文件存储路径
      */
-    private String task_type;
-
-
-
-    /**
-     * 资源大小，单位为字节
-     */
-    private Long upload_file_size;
-
-    /**
-     * 下载时长
-     */
-    private String total_time;
-
-    /**
-     * 创建时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date create_time;
-
-    /**
-     * 更新时间
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date update_time;
+    private String file_url;
 
 
     private static final long serialVersionUID = 1L;

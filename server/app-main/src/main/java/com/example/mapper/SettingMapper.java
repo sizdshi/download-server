@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 @Mapper
+@Component
 public interface SettingMapper {
 
     @Select("SELECT store_path as storePath,max_tasks as maxTasks,max_download_speed as maxDownloadSpeed,max_upload_speed as maxUploadSpeed FROM setting WHERE id=1")

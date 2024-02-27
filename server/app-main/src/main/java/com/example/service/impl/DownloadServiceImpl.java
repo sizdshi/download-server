@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,9 +9,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.constant.CommonConstant;
 import com.example.download.common.ErrorCode;
+import com.example.mapper.SettingsMapper;
 import com.example.model.dto.DownloadRequest;
 import com.example.model.dto.ThreadRequest;
 import com.example.model.entity.Download;
+import com.example.model.entity.Setting;
 import com.example.model.vo.DownloadVO;
 import com.example.utils.SqlUtils;
 import com.example.exception.BusinessException;
@@ -44,7 +47,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     @Resource
     private DownloadMapper downloadMapper;
 
-
+    @Resource
+    private SettingsMapper settingsMapper;
 
     @PostConstruct
     public void init() {
@@ -218,11 +222,13 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         invokeLambdaUpdateWrapper.eq(Download::getUrl,url);
         long count = downloadMapper.selectCount(invokeLambdaUpdateWrapper);
 
+
         if(count>0){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"请求文件已存在");
         }
         String fileName = url.substring(url.lastIndexOf('/') + 1);
 
+        Setting setting = settingsMapper.selectById(1);
 
         Download download = new Download();
         download.setUrl(url);
@@ -231,6 +237,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         download.setUpdate_time(new Date());
         download.setCreate_time(new Date());
         download.setIs_delete(0);
+        download.setCount(setting.getMax_tasks().longValue());
+
         //todo 文件大小在哪里处理
 
         boolean saveResult = this.save(download);
@@ -239,7 +247,8 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         if(!saveResult){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 提交任务失败 数据库异常");
         }
-        return Long.toString(download.getId());
+
+        return DownloadVO.objToVo(download).toString();
     }
     @Override
     public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {

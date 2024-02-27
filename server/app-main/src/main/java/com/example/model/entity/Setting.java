@@ -40,6 +40,8 @@ public class Setting implements Serializable {
      */
     private Integer max_upload_speed;
 
+
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
