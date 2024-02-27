@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -35,6 +36,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 /**
 * @author sizd-shi
 * @description 针对表【download(上传下载表)】的数据库操作Service实现
@@ -106,6 +109,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     }
 
     @Override
+    @Transactional
     public long start(List<String> ids,HttpServletRequest request) {
         if(!CollectionUtils.isNotEmpty(ids)){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR,"传入数组为空");
@@ -207,6 +211,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
     }
 
     @Override
+    @Transactional
     public String submit(String url) {
         if(!StringUtils.isNotEmpty(url)){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
@@ -248,7 +253,9 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 提交任务失败 数据库异常");
         }
 
-        return DownloadVO.objToVo(download).toString();
+        String downLoadJson = JSON.toJSONString(DownloadVO.objToVo(download));
+        System.out.println(downLoadJson);
+        return downLoadJson;
     }
     @Override
     public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {
