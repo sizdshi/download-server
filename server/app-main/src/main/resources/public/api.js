@@ -20,6 +20,36 @@ async function axiosRequest(method, urlSuffix, data) {
         });
 }
 
+async function axiosDownloadRequest(method, urlSuffix, data) {
+    console.log("请求Download")
+    const baseUrl = "http://localhost:8012";
+    const fullUrl = `${baseUrl}/${urlSuffix}`;
+
+    return axios({
+        method: method,
+        url: fullUrl,
+        data: data,
+        params: method === "GET" ? data : undefined,
+    })
+        .then(response => response.data)
+        .catch(error => {
+            console.error('错误:', error);
+            throw error;
+        });
+}
+
+async function download(params){
+    const requestData={
+        "id": params.id,
+        "savePath": params.savePath,
+        "threadCount": params.threadCount,
+        "url": params.url
+    }
+    const data  = await axiosDownloadRequest('POST',"download/start",requestData);
+    console.log(data)
+    return data;
+}
+
 // 设置页面 api,下面是需要返回给我的数据格式
 async function fetchSettings() {
 
@@ -193,25 +223,21 @@ async function submitDownloadPath(path) {
         url: path
     };
 
+    const responseData = await axiosRequest("POST","task/submit",requestData);
+    const { id, file_url: savePath, count: threadCount, url } = responseData.data;
 
-
-    const adaptedData ={
-        id:[]
+    const newData = {
+        id: id || "",
+        savePath: savePath || "",
+        threadCount: threadCount ,
+        url: url || ""
     };
 
-    const responseData = await axiosRequest("POST","task/submit",requestData);
-    console.log("这是responseData: "+JSON.stringify(responseData));
-    // await  axiosRequest("POST", "task/submit", requestData).then(data => {
-    //     adaptedData.id = [data.data];
-    //     console.log(data.data);
-    // })
-    //     .catch(error => {
-    //         // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
-    //     });
+    console.log(newData);
 
-    console.log(adaptedData.id)
 
-    return adaptedData.id;
+
+    return newData;
 }
 
 // 重新下载任务的详细信息，ids是一个数组，单个任务，就是一个元素的数组，多个任务就是多个元素的数组，实现同一个接口单量和多量的处理
@@ -221,6 +247,8 @@ async function fetchTaskInfo(ids) {
         console.log(data)
     })
 }
+
+
 
 // 暂停下载任务,ids是一个数组，单个任务，就是一个元素的数组，多个任务就是多个元素的数组，实现同一个接口单量和多量的处理
 async function pauseTask(ids) {

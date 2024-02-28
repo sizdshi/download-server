@@ -212,7 +212,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
 
     @Override
     @Transactional
-    public String submit(String url) {
+    public DownloadVO submit(String url) {
         if(!StringUtils.isNotEmpty(url)){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
@@ -243,7 +243,7 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
         download.setCreate_time(new Date());
         download.setIs_delete(0);
         download.setCount(setting.getMax_tasks().longValue());
-
+        download.setFile_url(setting.getStore_path());
         //todo 文件大小在哪里处理
 
         boolean saveResult = this.save(download);
@@ -253,9 +253,10 @@ public class DownloadServiceImpl extends ServiceImpl<DownloadMapper, Download>
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"download 提交任务失败 数据库异常");
         }
 
-        String downLoadJson = JSON.toJSONString(DownloadVO.objToVo(download));
-        System.out.println(downLoadJson);
-        return downLoadJson;
+//        String downLoadJson = JSON.toJSONString(DownloadVO.objToVo(download));
+//        System.out.println(downLoadJson);
+//        return downLoadJson;
+        return DownloadVO.objToVo(download);
     }
     @Override
     public Page<DownloadVO> listDownloadVOByPage(DownloadRequest downloadRequest, HttpServletRequest request) {

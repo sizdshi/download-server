@@ -41,6 +41,11 @@ public class DownloadVO implements Serializable {
      */
     private String file_url;
 
+    /**
+     * 当前线程数
+     */
+    private Long count;
+
 
     private static final long serialVersionUID = 1L;
 

@@ -51,7 +51,10 @@
                 async submitData(path) {
                     await validateURL(path)
                     const res = await submitDownloadPath(path)
-                    await resumeTask(res)
+                    const ids = [res.id]
+                    console.log("this is res :"+ res.threadCount)
+                    await resumeTask(ids)
+                    await download(res)
                     await this.fetchData()
                 },
                 async refresh(ids) {

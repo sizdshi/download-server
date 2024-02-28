@@ -29,7 +29,7 @@ public interface DownloadService extends IService<Download> {
 
     long delete(List<String> ids);
 
-    String submit(String url);
+    DownloadVO submit(String url);
 
 
 

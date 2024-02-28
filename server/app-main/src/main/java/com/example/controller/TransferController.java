@@ -97,8 +97,10 @@ public class TransferController {
         if (!StringUtils.isNotEmpty(submitRequest.getUrl())) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        String result = downloadService.submit(submitRequest.getUrl());
-        return ResultUtils.success(result);
+        DownloadVO downloadVO = downloadService.submit(submitRequest.getUrl());
+
+
+        return ResultUtils.success(downloadVO);
     }
 
     @PostMapping("/list/page/vo")
