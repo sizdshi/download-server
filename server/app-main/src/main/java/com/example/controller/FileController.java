@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.model.FileInfo;
-import com.example.mapper.SettingMapper;
+import com.example.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,21 @@ import java.util.*;
 public class FileController {
 
     @Autowired
-    private SettingMapper settingMapper;
+    private SettingsService settingsService;
 
+    /**
+     * 获取存储路径
+     *
+     * @return 存储路径
+     */
     @GetMapping("/getStorePath")
     @ResponseBody
     public String getStorePath() {
 
-        String path = settingMapper.get().getStorePath();
+        String path = settingsService.getStorePath();
+        if (path == null || path.isEmpty()) {
+            return "Select a storage path in the Settings";
+        }
         path = new File(path).getAbsolutePath();
         return path;
     }
@@ -49,6 +57,16 @@ public class FileController {
         document.addAll(Arrays.asList("pptx", "docx", "xlsx"));
     }
 
+    /**
+     * 获取文件列表
+     * @param directory 目录路径
+     * @param sortBy 排序方式
+     * @param sortOrder 排序顺序
+     * @param filter 文件类型过滤
+     * @param response 响应对象
+     * @return 文件列表
+     * @throws IOException IO异常
+     */
     @GetMapping("/list")
     @ResponseBody
     public List<FileInfo> fileList(@RequestParam(defaultValue = "D:\\Downloads") String directory,
@@ -137,9 +155,14 @@ public class FileController {
         return filenames;
     }
 
-
+    /**
+     * 判断文件扩展名是否符合过滤条件
+     * @param ext 文件扩展名
+     * @param filter 过滤条件，可选值为 "all", "video", "image", "archive", "document"
+     * @return 如果符合过滤条件返回true，否则返回false
+     */
     private static boolean judgeExt(String ext, String filter){
-        ext = ext.toLowerCase();
+        ext = ext.toLowerCase(); // 将扩展名转换为小写
         switch (filter){
             case "all":
                 return true;
@@ -156,6 +179,11 @@ public class FileController {
         }
     }
 
+    /**
+     * 格式化文件大小
+     * @param size 文件大小
+     * @return 格式化后的文件大小
+     */
     private static String formatSize(double size) {
         DecimalFormat df = new DecimalFormat("#.##");
         return df.format(size);

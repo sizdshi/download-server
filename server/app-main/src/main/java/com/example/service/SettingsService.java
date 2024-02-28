@@ -12,4 +12,12 @@ import com.example.model.entity.Setting;
 public interface SettingsService extends IService<Setting> {
 
     String queryByInit();
+    Setting get();
+    int update(Setting setting);
+    String getStorePath();
+    int getMaxTasks();
+    int getMaxDownloadSpeed();
+    int getMaxUploadSpeed();
+    Setting getSetting();
+    int updateSetting(Setting setting);
 }

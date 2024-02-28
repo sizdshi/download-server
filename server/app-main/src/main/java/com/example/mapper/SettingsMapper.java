@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  * @Description:
  **/
 public interface SettingsMapper extends BaseMapper<Setting> {
-
+    Setting get();
+    int update(Setting setting);
 
 }

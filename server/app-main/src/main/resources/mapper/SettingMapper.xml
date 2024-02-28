@@ -20,4 +20,14 @@
     <select id="queryByInit" resultMap="BaseResultMap">
         select * from downloader_db.setting where id = '1'
     </select>
+
+    <select id="get" resultMap="BaseResultMap">
+        SELECT * FROM setting WHERE id=1
+    </select>
+
+    <update id="update" parameterType="com.example.model.entity.Setting">
+        update setting set store_path=#{store_path},max_tasks=#{max_tasks},max_download_speed=#{max_download_speed},max_upload_speed=#{max_upload_speed} where id=1
+    </update>
+
+
 </mapper>

@@ -29,19 +29,19 @@ async function fetchSettings() {
 
         console.log('asd', data)
         return {
-            downloadPath: data.setting.storePath,
-            maxTasks: data.setting.maxTasks,
-            maxDownloadSpeed: data.setting.maxDownloadSpeed,
-            maxUploadSpeed: data.setting.maxUploadSpeed
+            store_path: data.setting.store_path,
+            max_tasks: data.setting.max_tasks,
+            max_download_speed: data.setting.max_download_speed,
+            max_upload_speed: data.setting.max_upload_speed
         };
     } catch (error) {
         console.error(error);
         // 返回默认值或进行其他错误处理逻辑
         return {
-            downloadPath: '',
-            maxTasks: 0,
-            maxDownloadSpeed: 0,
-            maxUploadSpeed: 0
+            store_path: '',
+            max_tasks: 0,
+            max_download_speed: 0,
+            max_upload_speed: 0
         };
     }
 }
@@ -52,10 +52,10 @@ async function saveSettings(settings) {
     // return true
     try {
         const data = {
-            storePath: settings.downloadPath,
-            maxTasks: settings.maxTasks,
-            maxDownloadSpeed: settings.maxDownloadSpeed,
-            maxUploadSpeed: settings.maxUploadSpeed
+            store_path: settings.store_path,
+            max_tasks: settings.max_tasks,
+            max_download_speed: settings.max_download_speed,
+            max_upload_speed: settings.max_upload_speed
         };
 
         await axiosRequest("POST", "settings", data)

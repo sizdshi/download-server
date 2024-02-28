@@ -29,6 +29,46 @@ public class SettingsServiceImpl extends ServiceImpl<SettingsMapper, Setting>
         Setting setting = settingsMapper.selectById(1);
         return setting.toString();
     }
+
+    @Override
+    public Setting get() {
+        return null;
+    }
+
+    @Override
+    public int update(Setting setting) {
+        return 0;
+    }
+
+    @Override
+    public String getStorePath() {
+        return settingsMapper.get().getStore_path();
+    }
+
+    @Override
+    public int getMaxTasks() {
+        return settingsMapper.get().getMax_tasks();
+    }
+
+    @Override
+    public int getMaxDownloadSpeed() {
+        return settingsMapper.get().getMax_download_speed();
+    }
+
+    @Override
+    public int getMaxUploadSpeed() {
+        return settingsMapper.get().getMax_upload_speed();
+    }
+
+    @Override
+    public Setting getSetting() {
+        return settingsMapper.get();
+    }
+
+    @Override
+    public int updateSetting(Setting setting) {
+        return settingsMapper.update(setting);
+    }
 }
 
 

@@ -20,8 +20,6 @@ public class InnerDownloadServiceImpl implements InnerDownloadService {
     @Resource
     private DownloadMapper downloadMapper;
 
-
-
     @Override
     public Map<String, String> searchAllTaskStatus() {
         Map<String,String> idStatusMap = new HashMap<>();

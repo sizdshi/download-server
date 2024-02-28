@@ -23,10 +23,10 @@
                 },
                 async saveData(){
                     let data = {
-                        downloadPath: this.settings.downloadPath,
-                        maxTasks: this.settings.maxTasks,
-                        maxDownloadSpeed: this.settings.maxDownloadSpeed,
-                        maxUploadSpeed: this.settings.maxUploadSpeed,
+                        store_path: this.settings.store_path,
+                        max_tasks: this.settings.max_tasks,
+                        max_download_speed: this.settings.max_download_speed,
+                        max_upload_speed: this.settings.max_upload_speed,
                     }
                     await saveSettings(data)
                 }
@@ -68,14 +68,14 @@
 
         <div class="text-gray-700 w-full">
             <p class="text-lg font-semibold">Download Path</p>
-            <input type="text" placeholder="/data/downloads" x-model="settings.downloadPath" class="flex-grow rounded mt-2 w-full">
+            <input type="text" placeholder="/data/downloads" x-model="settings.store_path" class="flex-grow rounded mt-2 w-full">
         </div>
         <div class="text-gray-700 w-full">
             <div class="flex items-center space-x-6">
                 <p class="text-lg font-semibold">Max Tasks </p>
                 <p>Allow maximum task parallelism</p>
             </div>
-            <input type="number" placeholder="1" x-model="settings.maxTasks" class="rounded mt-2 w-40" min="0">
+            <input type="number" placeholder="1" x-model="settings.max_tasks" class="rounded mt-2 w-40" min="0">
         </div>
 
         <div class="text-gray-700 w-full">
@@ -86,7 +86,7 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                <input type="number" placeholder="1" x-model="settings.maxDownloadSpeed" class="rounded mt-2 w-40" min="0">
+                <input type="number" placeholder="1" x-model="settings.max_download_speed" class="rounded mt-2 w-40" min="0">
                 <p> Mb/s</p>
             </div>
         </div>
@@ -100,7 +100,7 @@
                 </p>
             </div>
             <div class="flex items-center space-x-2">
-                <input type="number" placeholder="1" x-model="settings.maxUploadSpeed"  class="rounded mt-2 w-40" min="0">
+                <input type="number" placeholder="1" x-model="settings.max_upload_speed"  class="rounded mt-2 w-40" min="0">
                 <p>Mb/s</p>
             </div>
         </div>
