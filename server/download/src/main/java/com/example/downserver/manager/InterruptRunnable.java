@@ -5,7 +5,7 @@ import com.example.download.common.ErrorCode;
 import com.example.downserver.model.entity.Download;
 import com.example.downserver.service.DownloadService;
 import com.example.exception.BusinessException;
-import com.example.service.SpeedListener;
+import com.example.downserver.service.SpeedListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

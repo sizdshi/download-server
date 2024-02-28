@@ -1,4 +1,4 @@
-package com.example.manager;
+package com.example.downserver.manager;
 
 /**
  * @Author: Kenneth shi

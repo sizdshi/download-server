@@ -1,6 +1,6 @@
-package com.example.service.impl;
+package com.example.downserver.service.impl;
 
-import com.example.service.HttpService;
+import com.example.downserver.service.HttpService;
 import org.springframework.stereotype.Service;
 
 /**
