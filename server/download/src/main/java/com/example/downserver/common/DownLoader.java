@@ -1,4 +1,4 @@
-package com.example.common;
+package com.example.downserver.common;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;

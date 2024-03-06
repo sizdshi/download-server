@@ -1,6 +1,6 @@
-package com.example.service.impl;
+package com.example.downserver.service.impl;
 
-import com.example.service.HttpDownload;
+import com.example.downserver.service.HttpDownload;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,9 +14,8 @@ import java.net.URL;
 @Service
 public class HttpDownloadImpl implements HttpDownload {
 
-
+    //https://dldir1.qq.com/qqfile/qq/QQNT/897bf087/QQ9.9.7.21484_x64.exe
     private String url;
-
 
     public HttpDownloadImpl() {
         this(null);

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface DownloadMapper extends BaseMapper<Download> {
 
-
     int queryByIds(@Param("ew") LambdaUpdateWrapper<Download> wrapper);
 }
 

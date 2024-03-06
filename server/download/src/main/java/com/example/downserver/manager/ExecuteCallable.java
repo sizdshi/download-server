@@ -1,6 +1,7 @@
 package com.example.downserver.manager;
 
-import com.example.common.DownLoader;
+
+import com.example.downserver.common.DownLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

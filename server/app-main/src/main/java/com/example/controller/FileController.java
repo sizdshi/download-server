@@ -69,15 +69,16 @@ public class FileController {
      */
     @GetMapping("/list")
     @ResponseBody
-    public List<FileInfo> fileList(@RequestParam(defaultValue = "D:\\Downloads") String directory,
+    public List<FileInfo> fileList(@RequestParam(required = false) String directory,
                                    @RequestParam(defaultValue = "createdAt") String sortBy,
                                    @RequestParam(defaultValue = "desc") String sortOrder,
                                    @RequestParam(defaultValue = "all") String filter,
                                    HttpServletResponse response) throws IOException {
 
-
         // Check if directory is empty or null
         if (directory == null || directory.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("The specified directory is empty.");
             return null;
         }
         //get absolute path
@@ -91,7 +92,6 @@ public class FileController {
         }
 
         File[] files = new File(directory).listFiles();
-
 
         boolean ascending = true;
         if (sortOrder.equalsIgnoreCase("desc")) {
@@ -115,11 +115,10 @@ public class FileController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
         List<FileInfo> filenames = new ArrayList<>();
         for (File f : files) {
-            FileInfo fileInfo = new FileInfo();
 
+            FileInfo fileInfo = new FileInfo();
             String[] split = f.getName().split("\\.");
             String ext = split[split.length - 1];
             if(!judgeExt(ext, filter)){
@@ -146,6 +145,7 @@ public class FileController {
                 double size = f.length()/1024.0/1024.0/1024.0;
                 fileInfo.setSize(formatSize(size)+"GB");
             }
+
             fileInfo.setCreatedAt(sdf.format(createDate));
             fileInfo.setDirectory(f.isDirectory());
             fileInfo.setPath("\\" + f.getName());

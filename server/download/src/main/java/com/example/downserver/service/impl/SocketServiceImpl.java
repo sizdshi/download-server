@@ -1,6 +1,6 @@
-package com.example.service.impl;
+package com.example.downserver.service.impl;
 
-import com.example.service.SocketService;
+import com.example.downserver.service.SocketService;
 
 import java.io.*;
 import java.net.*;
