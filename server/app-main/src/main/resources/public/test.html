@@ -88,56 +88,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpine.js 调用封装的 Axios</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" type="module"></script>
     <!--    <script src="./myAxios.js" ></script>-->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
-</head>
-<body x-data="getData()">
-<div>
-    <p x-text="message"></p>
-    <button @click="startHandle">获取数据</button>
-</div>
-
-<script>
-    let message = '';
-
-    function axiosRequest(method, urlSuffix, data) {
-        const baseUrl = "http://localhost:8011";
-        const fullUrl = `${baseUrl}/${urlSuffix}`;
-
-        return axios({
-            method: method,
-            url: fullUrl,
-            data: data,
-        })
-            .then(response => response.data)
-            .catch(error => {
-                console.error('错误:', error);
-                throw error;
-            });
-    }
-
-    function getData() {
-        const requestData = new URLSearchParams();
-        requestData.append('id', '1705234447153963010');
-        return {
-            startHandle() {
-                    message: '',
-                    axiosRequest("POST", "task/start", requestData)
-                        .then(data => {
-                            this.message = data.message; // 假设响应包含 'message' 属性
-                            console.log(data.message);
-                        })
-                        .catch(error => {
-                            // 错误处理已经在 axiosRequest 中完成，这里无需重复处理
-                        });
-            }
-            // 使用封装的 Axios 实例
+    <title>Home</title>
+    <script>
+        var sseSource = new EventSource("http://localhost:8012/sse/userConnect");
+        <!-- 添加一个信息回调 -->
+        sseSource.onmessage = function(event){
+            console.log("test=>",event)
+            document.getElementById("result").innerText = event.data+'%';
+            document.getElementById("my-progress").value = event.data;
         }
+        // 使用vue交互事件，可以添加一些SSE的回调
+        // sseSource.dispatchEvent();
+        // sseSource.close();
+    </script>
+</head>
+<body>
+<div id="result"></div>
+下载进度条：<progress style="width: 300px" id="my-progress" value="0" max="100"></progress>
 
-    }
-</script>
 </body>
 </html>
 

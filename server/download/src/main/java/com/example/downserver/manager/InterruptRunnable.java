@@ -1,14 +1,9 @@
 package com.example.downserver.manager;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.download.common.ErrorCode;
-import com.example.downserver.model.entity.Download;
 import com.example.downserver.service.DownloadService;
-import com.example.exception.BusinessException;
-import com.example.service.SpeedListener;
+import com.example.downserver.service.SpeedListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -55,7 +50,7 @@ public class InterruptRunnable implements Runnable {
     public void run() {
         try {
             beginLatch.await();
-//            startDatabasePollingTask();
+
             startSpeedCheckTask();
 
 //            concurrentTaskExecutor.setCanceled(true);
@@ -68,7 +63,7 @@ public class InterruptRunnable implements Runnable {
         Set<Long> completedChunks = new HashSet<>();
         String fileName = concurrentTaskExecutor.getUrlPath().substring(concurrentTaskExecutor.getUrlPath().lastIndexOf('/') + 1);
         try {
-            File scoreboardFile = new File(concurrentTaskExecutor.getSavePath(), fileName+"_scoreboard.txt");
+            File scoreboardFile = new File(concurrentTaskExecutor.getSavePath(), fileName + "_scoreboard.txt");
             if (scoreboardFile.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(scoreboardFile))) {
                     String line;

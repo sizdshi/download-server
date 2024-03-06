@@ -26,12 +26,6 @@ public class ExecuteCallable extends DownLoader {
     private long startIndex;
     private long endIndex;
 
-//    private static HttpDownload httpDownload;
-//
-//    @Autowired
-//    public void setHttpDownload(HttpDownload httpDownload) {
-//        ExecuteCallable.httpDownload = httpDownload;
-//    }
 
     public ExecuteCallable() {
         super(null,null);
@@ -135,13 +129,11 @@ public class ExecuteCallable extends DownLoader {
         }
 
 
-//        System.out.println("线程：" + threadId + "号下载完毕了");
+
 
         long millis = (long) (Math.random() * 10 * 1000);
         String result = String.format("线程 :%s 已完成下载, 耗时 %s millis", threadId, millis);
 
-//        System.out.println(result);
-//        exchanger.exchange(1);
         endLatch.countDown();
 
 

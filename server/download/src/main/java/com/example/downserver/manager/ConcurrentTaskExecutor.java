@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.download.common.ErrorCode;
 import com.example.downserver.model.entity.Download;
 import com.example.downserver.service.DownloadService;
+import com.example.downserver.service.SpeedListener;
 import com.example.exception.BusinessException;
-import com.example.service.SpeedListener;
+
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,6 @@ public class ConcurrentTaskExecutor  {
     private List<SpeedListener> speedListeners = new ArrayList<>();
 
     public void addSpeedListener(SpeedListener speedListener) {
-//        speedListeners.add(speedListener);
         this.speedListener = speedListener;
     }
 
@@ -134,8 +134,6 @@ public class ConcurrentTaskExecutor  {
         this.threadCount = newThreadCount;
         taskExecutor.shutdown(); // 关闭现有的执行器
         taskExecutor = createThreadPoolTaskExecutor();
-//        taskExecutor.setCorePoolSize(newThreadCount);
-//        taskExecutor.setMaxPoolSize(newThreadCount);
     }
 
 
@@ -145,13 +143,12 @@ public class ConcurrentTaskExecutor  {
         int actualThread = 0;
         totalFileSize = getTotalFileSize(urlPath);
         log.info("totalFile: {}", totalFileSize);
-//        ConcurrentTaskExecutor.len = totalFileSize;
+
         long chunkSize = calculateChunkSize(totalFileSize);
         log.info("chunkSize: {}", chunkSize);
         String fileName = urlPath.substring(urlPath.lastIndexOf('/') + 1);
 
-//        RandomAccessFile file = new RandomAccessFile(savePath + fileName, "rwd");
-//        file.setLength(totalFileSize);
+
         //  completedChunks用于存储已经下载完成的分片
         Set<Long> completedChunks = loadCompletedChunks();
 
@@ -173,7 +170,7 @@ public class ConcurrentTaskExecutor  {
             }
             actualThread++;
             futureTaskList.add(new FutureTask<String>(new ExecuteCallable(beginLatch, endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
-//            futureTaskList.add(new FutureTask<String>(new ExecuteCallable( endLatch, exchanger, i, this,startIndex,endIndex,urlPath,savePath)));
+
 
         }
 
@@ -184,7 +181,6 @@ public class ConcurrentTaskExecutor  {
             System.out.println("提交任务"+futureTask.toString());
         }
 
-//        List<Future<String>> futures = taskExecutor.getThreadPoolExecutor().invokeAll(futureTaskList);
 
         new Thread(new InterruptRunnable(this, beginLatch,speedListener)).start();
 
@@ -192,14 +188,6 @@ public class ConcurrentTaskExecutor  {
         beginLatch.countDown();
 
 
-//        Integer totalResult = Integer.valueOf(0);
-//        for (int i = 0; i < actualThread; i++) {
-//            Integer partialResult = exchanger.exchange(Integer.valueOf(0));
-//            if(partialResult != 0){
-//                totalResult = totalResult + partialResult;
-//                System.out.println(String.format("Progress: %s/%s", totalResult, actualThread));
-//            }
-//        }
 
         endLatch.await();
 
@@ -244,11 +232,14 @@ public class ConcurrentTaskExecutor  {
 
     private long calculateChunkSize(long totalFileSize) {
         if (totalFileSize <= 32 * 1024) {
-            return 32 * 1024;  // 最小32KB
+            // 32KB
+            return 32 * 1024;
         } else if (totalFileSize <= 10 * 1024 * 1024) {
-            return 1 * 1024 * 1024;  // 1MB
+            // 1MB
+            return 1 * 1024 * 1024;
         } else if (totalFileSize <= 100 * 1024 * 1024) {
-            return 10 * 1024 * 1024;  // 10MB
+            // 10MB
+            return 10 * 1024 * 1024;
         } else {
             // 超过100MB的按照10MB进行分片
             return 10 * 1024 * 1024;
@@ -279,41 +270,12 @@ public class ConcurrentTaskExecutor  {
     }
 
 
-    private void speed(){
-        long currentProgress = 0;
-        while(downloadInProgress){
-            currentProgress = progress;
-            Set<Long> completedChunks = loadCompletedChunks();
-            int downloadedChunks = completedChunks.size();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //下载百分比
-            double downloadedPercentage = (double)  downloadedChunks /  (double) totalTasks* 100;
-            // 当前下载进度除以文件总长得到下载进度
-            double percent =  currentProgress / (double)totalFileSize * (100 - downloadedPercentage) + downloadedPercentage;
-            // 当前下载进度减去前一秒的下载进度就得到一秒内的下载速度
-            currentProgress=progress-currentProgress;
-            speedListener.speed(currentProgress,percent);
-            // 判断是否所有分片下载完成
-            boolean allChunksDownloaded = checkAllChunksDownloaded();
-            if (allChunksDownloaded) {
-                downloadInProgress = false;
-                currentProgress = totalFileSize-progress;
-                speedListener.speed(currentProgress, 100);
-                System.out.println("文件下载完毕");
-            }
 
-        }
-
-    }
 
     private boolean checkAllChunksDownloaded() {
         Set<Long> completedChunks = loadCompletedChunks();
 
-//        long totalTasks = (long) Math.ceil((double) len / concurrentTaskExecutor.getTotalTasks());
+
 
         for (long i = 0; i < totalTasks; i++) {
             if (!completedChunks.contains(i)) {
@@ -323,18 +285,6 @@ public class ConcurrentTaskExecutor  {
 
         return true;
     }
-
-
-//    @Scheduled(fixedRate = 200)
-//    private void startDatabasePollingTask() {
-//        log.info("轮训数据库");
-//        boolean canceled = checkDatabaseStatus();
-//        if (canceled) {
-//            setCanceled(true);
-//            System.out.println("取消下载");
-//        }
-//
-//    }
 
 
     private boolean checkDatabaseStatus(){
