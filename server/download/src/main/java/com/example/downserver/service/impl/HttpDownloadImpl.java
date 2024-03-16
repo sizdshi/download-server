@@ -24,14 +24,12 @@ public class HttpDownloadImpl implements HttpDownload {
 
     public HttpDownloadImpl() {
         this(null);
-
     }
 
     public HttpDownloadImpl(String url) {
         this.setUrl(url);
         this.url = url;
     }
-
 
     @Override
     public void setUrl(String url) {
@@ -74,7 +72,7 @@ public class HttpDownloadImpl implements HttpDownload {
      * @param end   结束读取位置（字节）
      * @return 从网络读取的字节数组
      * @throws RuntimeException 当读取发生错误或响应码非预期时抛出
-     * @Author zyh
+     * @author zyh
      */
     @Override
     public byte[] readChunk(long start, long end) {
