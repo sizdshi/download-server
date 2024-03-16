@@ -39,9 +39,7 @@ public class FileController {
 
     private static final Set<String> video = new HashSet<>();
     private static final Set<String> image = new HashSet<>();
-
     private static final Set<String> archive = new HashSet<>();
-
     private static final Set<String> document = new HashSet<>();
 
     static {

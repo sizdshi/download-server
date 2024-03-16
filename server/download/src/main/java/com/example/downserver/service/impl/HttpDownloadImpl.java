@@ -1,11 +1,16 @@
 package com.example.downserver.service.impl;
 
 import com.example.downserver.service.HttpDownload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * @Author: Kenneth shi
@@ -14,7 +19,7 @@ import java.net.URL;
 @Service
 public class HttpDownloadImpl implements HttpDownload {
 
-    //https://dldir1.qq.com/qqfile/qq/QQNT/897bf087/QQ9.9.7.21484_x64.exe
+    private final static Logger log = LoggerFactory.getLogger(HttpDownloadImpl.class);
     private String url;
 
     public HttpDownloadImpl() {
@@ -22,75 +27,96 @@ public class HttpDownloadImpl implements HttpDownload {
 
     }
 
-    public HttpDownloadImpl(String url){
+    public HttpDownloadImpl(String url) {
         this.setUrl(url);
         this.url = url;
     }
 
 
     @Override
-    public void setUrl(String url){
+    public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * 获取指定URL的文件大小。
+     * 该方法通过发送一个GET请求来获取服务器上文件的大小，单位为字节。
+     *
+     * @return 返回文件的大小，如果无法获取则抛出RuntimeException。
+     */
     @Override
     public long getFileSize() {
         try {
-            URL netUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) netUrl.openConnection();
+            URL netUrl = new URL(url); // 创建URL对象
+            HttpURLConnection connection = (HttpURLConnection) netUrl.openConnection(); // 打开连接
 
-            //发送一个普通的GET请求，只获取文件大小而不读取内容
+            // 设置请求方法为GET，只获取文件大小而不读取文件内容
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(100);
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "keep-alive");
-            connection.setRequestProperty("user-agent",
+            connection.setConnectTimeout(100); // 设置连接超时时间
+            connection.setRequestProperty("accept", "*/*"); // 设置接受所有类型的内容
+            connection.setRequestProperty("connection", "keep-alive"); // 设置保持连接
+            connection.setRequestProperty("user-agent", // 设置用户代理，模拟浏览器请求
                     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
 
-            long totalFileSize = connection.getContentLengthLong();
-
-            connection.disconnect();
+            long totalFileSize = connection.getContentLengthLong(); // 获取文件大小
+            connection.disconnect(); // 断开连接
             return totalFileSize;
         } catch (IOException e) {
+            // 如果发生IO异常，则抛出运行时异常
             throw new RuntimeException(e);
         }
     }
 
-
-
+    /**
+     * 从指定URL读取指定范围的数据。
+     *
+     * @param start 起始读取位置（字节） 从0开始
+     * @param end   结束读取位置（字节）
+     * @return 从网络读取的字节数组
+     * @throws RuntimeException 当读取发生错误或响应码非预期时抛出
+     * @Author zyh
+     */
     @Override
     public byte[] readChunk(long start, long end) {
         try {
+            // 创建URL对象并打开连接
             URL fileUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) fileUrl.openConnection();
-            connection.setConnectTimeout(100);
-            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(100); // 设置连接超时时间
+            connection.setRequestMethod("GET"); // 设置请求方法为GET
+            // 设置请求头，请求特定范围的数据
             connection.setRequestProperty("Range", "bytes=" + start + "-" + end);
-            int responseCode =  connection.getResponseCode();
-            if(responseCode == HttpURLConnection.HTTP_PARTIAL){
-
-                //自动关闭输入输出流
-                try(InputStream inputStream = new BufferedInputStream(connection.getInputStream())){
-                    int bufferSize = (int) (end-start+1);
-                    byte[] buffer = new byte[bufferSize];
-                    //判断是否读取到文件尾
+            int responseCode = connection.getResponseCode(); // 获取响应码
+            if (responseCode == HttpURLConnection.HTTP_PARTIAL) {
+                // 当响应码表示部分内容时，即请求的范围数据成功
+                try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+                    int bufferSize = (int) (end - start); // 计算缓冲区大小
+                    byte[] buffer = new byte[bufferSize]; // 创建字节数组
+                    // 读取数据到缓冲区
                     int bytesRead;
-                    //记录读取位置
-                    int totalBytesRead = 0;
-                    //读取字符流到指定数组中
-                    // inputstream.read()详细看文档
-                    while (totalBytesRead < bufferSize && (bytesRead = inputStream.read(buffer, totalBytesRead, bufferSize - totalBytesRead)) != -1) {
-                        totalBytesRead += bytesRead;
+                    if ((bytesRead = inputStream.read(buffer, 0, bufferSize)) != -1) {
+                        // 成功读取数据
+                        log.info(">>>>> read success!");
+                        log.info("byteRead: " + bytesRead + " \t bufferSize:" + bufferSize);
+                        if (bytesRead != bufferSize) {
+                            // 如果实际读取的字节数小于预期，说明已到达文件末尾
+                            log.info(">>>>> read EOF but success! ");
+                            return Arrays.copyOf(buffer, bytesRead);
+                        }
+                        return buffer; // 返回读取的字节数组
+                    } else {
+                        // 如果未能读取到任何数据，抛出运行时异常
+                        throw new RuntimeException("read error! EOF");
                     }
-
-                    return buffer;
                 }
 
-            }else {
+            } else {
+                // 如果响应码非预期，抛出IO异常
                 throw new IOException("Unexpected response code: " + responseCode);
             }
 
         } catch (Exception e) {
+            // 捕获并抛出所有异常
             throw new RuntimeException(e);
         }
     }
