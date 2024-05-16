@@ -101,8 +101,8 @@
             document.getElementById("my-progress").value = event.data;
         }
         // 使用vue交互事件，可以添加一些SSE的回调
-        // sseSource.dispatchEvent();
-        // sseSource.close();
+        sseSource.dispatchEvent();
+        sseSource.close();
     </script>
 </head>
 <body>

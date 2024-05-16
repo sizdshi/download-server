@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -31,14 +32,18 @@ public class SSEDemoController {
      * @return
      */
     @GetMapping("/userConnect")
-    public SseEmitter connect() {
+    public SseEmitter connect(@RequestParam("userId") String userId) {
         /**
          * 取登录用户账号作为 messageId。
          * 分组的话需要约定 messageId的格式。
          * 这里模拟创建一个用户连接
          */
-        String userId = "userId-" + RandomUtils.nextInt(1, 10);
-        return SseServer.createConnect(userId);
+//        String userId = "userId-" + RandomUtils.nextInt(1, 10);
+        try {
+            return SseServer.createConnect(userId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     /**
      * 模拟实例：下载进度条显示。 前端访问下载接口之前，先建立用户SSE连接，然后访问下载接口，服务端推送消息。

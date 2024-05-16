@@ -1,6 +1,23 @@
 /**
  * @returns {Array} 返回所有的设置项
  */
+async function sseRequest(){
+    const userId = new Date().toString();
+    var sseSource = new EventSource("http://localhost:8012/sse/userConnect?userId="+userId);
+
+    sseSource.onopen=(e)=>{
+        console.log("test=>",e);
+        console.log("sse连接成功");
+    }
+    <!-- 添加一个信息回调 -->
+    // return sseSource.onmessage = function(event){
+    //     console.log("test=>",event)
+    //     // document.getElementById("result").innerText = event.data+'%';
+    //     // document.getElementById("my-progress").value = event.data;
+    // }
+
+}
+
 async function axiosRequest(method, urlSuffix, data) {
     console.log(1111)
     const baseUrl = "http://localhost:8011";

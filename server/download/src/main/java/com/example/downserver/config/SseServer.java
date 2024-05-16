@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -38,14 +41,14 @@ public class SseServer {
      * @param messageId - 消息id（唯一）
      * @return
      */
-    public static SseEmitter createConnect(String messageId) {
+    public static SseEmitter createConnect(String messageId) throws IOException {
         /**
          * 设置连接超时时间。0表示不过期，默认是30秒，超过时间未完成会抛出异常
          */
-        SseEmitter sseEmitter = new SseEmitter(0L);
-        /*
+//        SseEmitter sseEmitter = new SseEmitter(0L);
+
         // 超时时间设置为3s，设置前端的重试时间为1s。重连时，注意总数的统计
-        SseEmitter sseEmitter = new SseEmitter(3_000L);
+        SseEmitter sseEmitter = new SseEmitter(0L);
         try {
             sseEmitter.send(
                     SseEmitter.event()
@@ -55,15 +58,18 @@ public class SseServer {
         } catch (IOException e) {
             log.error("前端重连异常 ==> messageId={}, 异常信息：", messageId, e.getMessage());
             e.printStackTrace();
-        }*/
+        }
         // 注册回调
         sseEmitter.onCompletion(completionCallBack(messageId));
         sseEmitter.onTimeout(timeOutCallBack(messageId));
         sseEmitter.onError(errorCallBack(messageId));
         sseEmitterMap.put(messageId, sseEmitter);
         //记录一下连接总数。数量+1
-        int count = currentConnectTotal.incrementAndGet();
+//        int count = currentConnectTotal.incrementAndGet();
+        int count = sseEmitterMap.size();
         log.info("创建sse连接成功 ==> 当前连接总数={}， messageId={}", count, messageId);
+        sseEmitter.send(SseEmitter.event().data("test"));
+        startHeartbeatCheck();
         return sseEmitter;
     }
     /**
@@ -197,5 +203,22 @@ public class SseServer {
             log.error("连接异常 ==> messageId={}", messageId);
             removeMessageId(messageId);
         };
+    }
+
+    // 在 SseServer 类中添加一个心跳检测方法
+    private static void startHeartbeatCheck() {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            // 遍历所有连接，向客户端发送心跳消息
+            sseEmitterMap.forEach((messageId, sseEmitter) -> {
+                try {
+                    sseEmitter.send("heartbeat");
+                } catch (IOException e) {
+                    // 心跳发送失败，可能是连接已经关闭
+                    log.error("Heartbeat failed for messageId={}", messageId);
+                    removeMessageId(messageId);
+                }
+            });
+        }, 0, 10, TimeUnit.SECONDS); // 每10秒发送一次心跳消息
     }
 }
